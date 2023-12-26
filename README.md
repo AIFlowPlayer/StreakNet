@@ -67,13 +67,13 @@ YOUR_UNZIP_DIRECTORY
 <details>
 <summary id="quickstartinstallation">Installation</summary>
 
-Step1. Setup your conda environment. ([What is Anaconda?](https://www.anaconda.com/download))
+* Step1. Setup your conda environment. ([What is Anaconda?](https://www.anaconda.com/download))
 ```sh
 conda create -n streaknet python=3.7
 conda activate streaknet
 ```
 
-Step2. Install StreakNet from source.
+* Step2. Install StreakNet from source.
 ```sh
 git clone https://github.com/BestAnHongjun/StreakNet.git
 cd StreakNet
@@ -84,8 +84,56 @@ pip install -e .
 <details>
 <summary>Reproduce Experimental Results</summary>
 
-Step1. Install the StreakNet module by following the [*Installation*](#quickstartinstallation) section.
+* Step1. Install the StreakNet module by following the [*Installation*](#quickstartinstallation) section.
 
-Step2. Download
+* Step2. Download the [**StreakData**](#dataset) dataset from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), unzip it to *datasets* directory under the root directory of the project. Specifically, your project directory should look like this:
+
+```sh
+StreakNet
+    |- datasets
+    |   |- clean_water_10m
+    |   |- clean_water_13m
+    |   |- clean_water_15m
+    |   |- ...
+    |
+    |- assets
+    |- exps
+    |- scripts
+    |- streaknet
+    |- ...
+```
+
+* Step3. *cd* to the root directory of the project.
+```sh
+cd StreakNet
+```
+
+* Step4. Run the following commands to train the respective models.
+```sh
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py --cache
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_m.py --cache
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_l.py --cache
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py --cache
+```
+> Arguments:
+> **-b**: set the batch-size when training.
+> **-d**: set the number of GPU when training (Currently, only d=1 is supported).
+> **-f**: specify the experiment profile.
+> **--cache**: use RAM cache when training
+
+**Attention**: When you use the --cache option, the program will pre-load the dataset to RAM to accelerate the training process. Make sure your server has at least 25GB RAM space free to run this option. If your RAM space is not enough, please disable the --cache option, then the program will load data from the disk directly when need. But this often takes 10x more training time.
+
+```sh
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_m.py
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_l.py
+python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py
+```
+
+* Step5. Real-time training status will be saved to *StreakNet_outputs* folder. Run *tensorboard* to visualize the status of the training process.
+
+```sh
+tensorboard --logdir=StreakNet_outputs
+```
 
 </details>
