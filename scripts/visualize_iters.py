@@ -22,7 +22,7 @@ MODEL_EXT = [".pth"]
 
 
 def make_parser():
-    parser = argparse.ArgumentParser("Visualize Warmup Epochs")
+    parser = argparse.ArgumentParser("Visualize Warmup Iters")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     
     parser.add_argument(
