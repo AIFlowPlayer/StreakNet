@@ -65,9 +65,9 @@ YOUR_UNZIP_DIRECTORY
 
 ## Quick Start
 <details>
-<summary>Installation</summary>
+<summary id="quickstartinstallation">Installation</summary>
 
-Step1. Setup your conda environment.
+Step1. Setup your conda environment. ([What is Anaconda?](https://www.anaconda.com/download))
 ```sh
 conda create -n streaknet python=3.7
 conda activate streaknet
@@ -79,4 +79,13 @@ git clone https://github.com/BestAnHongjun/StreakNet.git
 cd StreakNet
 pip install -e .
 ```
+</details>
+
+<details>
+<summary>Reproduce Experimental Results</summary>
+
+Step1. Install the StreakNet module by following the [*Installation*](#quickstartinstallation) section.
+
+Step2. Download
+
 </details>
