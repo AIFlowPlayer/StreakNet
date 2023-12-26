@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import torch 
 from torch.utils.data import Dataset, DataLoader
 
-from streaknet.data import cal_valid_results
+from streaknet.data import cal_valid_results, cal_rates
 
 
 class StreakData(Dataset):
@@ -99,10 +99,13 @@ def valid(pred, label):
     pred = cv2.resize(pred, (label.shape[1], label.shape[0]))
     pred = (pred >= 128)
     
-    acc, precision, recall, f1, psnr = cal_valid_results(pred, label)
+    tp, fn, fp, tn = cal_valid_results(pred, label, origin=True)
+    acc, precision, recall, f1, psnr = cal_rates(tp, fn, fp, tn)
     print("Accuracy:{:.03f}% Precision:{:.03f}% Recall:{:.03f}% F1-Score:{:.03f}% PSNR:{:.03f}dB".format(
         acc * 100, precision * 100, recall * 100, f1 * 100, psnr
     ))
+    
+    return tp, fn, fp, tn
 
 
 def make_parse():
@@ -148,6 +151,7 @@ rates = [100, 100, 100, 50]
 if __name__ == "__main__":
     args = make_parse().parse_args()
     if args.img_dir is None:
+        tp, fn, fp, tn = 0, 0, 0, 0
         for img_dir_i, gd_i, num_i, rate_i, out_i in zip(img_dir, ground_truth, nums, rates, outputs):
             print("processing {}...".format(img_dir_i))
             pred = main(template_path=tem_path, 
@@ -157,9 +161,14 @@ if __name__ == "__main__":
                         rate=rate_i,
                         batch_size=args.batch_size)
             gd = np.load(gd_i)
-            valid(pred, gd)
+            tp_i, fn_i, fp_i, tn_i = valid(pred, gd)
+            tp, fn, fp, tn = tp + tp_i, fn + fn_i, fp + fp_i, tn + tn_i
             os.makedirs(os.path.dirname(out_i), exist_ok=True)
             cv2.imwrite(out_i, pred)
+        acc, precision, recall, f1, psnr = cal_rates(tp, fn, fp, tn)
+        print("[Total]Accuracy:{:.03f}% Precision:{:.03f}% Recall:{:.03f}% F1-Score:{:.03f}% PSNR:{:.03f}dB".format(
+            acc * 100, precision * 100, recall * 100, f1 * 100, psnr
+        ))
     else:
         pred = main(template_path=args.template_path, 
                     filename_format=args.file_format,
