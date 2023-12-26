@@ -3,7 +3,7 @@
 
 ## Introduction
 
-[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based underwater imaging augmentation network for **Underwater Streak Camera LiDAR (USCL)** systems. It can achieves **millimeter** resolution underwater imaging at a distance of **20m**. For more details, please refer to our [paper](#).
+[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based network for underwater target detection in **Underwater Streak Camera LiDAR (USCL)** systems. It is capable of detecting underwater objects at a **millimeter-level** accuracy up to a distance of **20m**. For further details, please refer to our [paper](#).
 
 <div align="center"><img src="./assets/streaknet_architecture.png"></div>
 
@@ -23,7 +23,7 @@ StreakNet Benchmark
 <details>
 <summary>Introduction</summary>
 
-**StreakData** is an underwater imaging dataset for **USCL** systems. It includes a series of streak images caught by a **USCL** system at distances of 10m, 13m, 15m, and 20m. See the table below to learn the details of the dataset.
+**StreakData** is an underwater imaging dataset for **USCL** systems. It comprises a collection of streak images captured by a **USCL** system at distances of 10m, 13m, 15m, and 20m. See the table below to learn more details of the dataset.
 
 |Distance|Number of streak images|Resolution of streak images|Resolution of imaged image|Data type|Sample size|
 |:---:|:---:|:---:|:---:|:---:|:---:|
@@ -38,8 +38,7 @@ You can download **StreakData** for free at [GoogleDrive](https://drive.google.c
 <details>
 <summary>Organizational Structure</summary>
 
-When you download **StreakData** from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), unzip it and you will get the following directory structure.
-
+After downloading **StreakData** from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), please unzip the file and you will see the following directory structure.
 ```sh
 YOUR_UNZIP_DIRECTORY
     |- clean_water_10m      # The directory of data taken at a distance of 10m
@@ -122,7 +121,9 @@ python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py --cache
 > **--cache**: use RAM cache when training
 
 **Attention**: 
+
 (1) When you enable the --cache option, the program will preload the dataset into the RAM to accelerate the training process. Please ensure that your server has at least 25GB of free RAM space to use this option. If your RAM space is insufficient, please disable the --cache option. In that case, the program will load data directly from the disk when needed. However, this approach often results in 10 times longer training times.
+
 (2) The program will utilize CUDA to accelerate the training process. Please ensure that your server is equipped with at least one NVIDIA GPU with a graphics memory capacity of more than **2GB**.
 
 ```sh
