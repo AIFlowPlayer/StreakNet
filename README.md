@@ -14,7 +14,7 @@ StreakNet Benchmark
 |[StreakNet-m](./exps/streaknet/streaknet_s.py)|00.00|00.00|00.0|00.00|00.00|[BaiduDisk](#)|
 |[StreakNet-l](./exps/streaknet/streaknet_s.py)|00.00|00.00|00.0|00.00|00.00|[BaiduDisk](#)|
 |[StreakNet-x](./exps/streaknet/streaknet_s.py)|00.00|00.00|00.0|00.00|00.00|[BaiduDisk](#)|
-|[Traditional Signal Processing](./scripts/traditional_gpu_process.py) (baseline)|00.00|00.00|00.0|00.00|---|---|
+|(baseline)|41.07|4.64|00.0|00.00|---|---|
 
 
 ## Quick Start
@@ -29,8 +29,8 @@ conda activate streaknet
 
 Step2. Install StreakNet from source.
 ```sh
-git clone
-cd streaknet
+git clone https://github.com/BestAnHongjun/StreakNet.git
+cd StreakNet
 pip install -e .
 ```
 </details>
