@@ -3,15 +3,15 @@
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div>
 <div align="center"><img src="./assets/demo.png"></div>
 
-## Introduction
+## 项目介绍
 
-[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based network for underwater target detection in **Underwater Streak Camera LiDAR (USCL)** systems. It is capable of detecting underwater objects at a **millimeter-level** accuracy up to a distance of **20m**. For further details, please refer to our [paper](#).
+[StreakNet](https://github.com/BestAnHongjun/StreakNet)是水下条纹相机激光雷达系统(Underwater Streak Camera LiDAR, USCL)中一种基于深度学习的水下目标探测网络。它能够在20米的距离内以毫米级精度探测水下物体。有关更多信息，可阅读我们的[论文](#)。
 
 <div align="center"><img src="./assets/streaknet_architecture.png"></div>
 
-## Benchmark
+## 基准测试
 
-StreakNet Benchmark
+StreakNet基准
 
 |Model|F1-Score (%)|PSNR (dB)|Speed V100 (ms/pixel)|Speed NX (ms/pixel)|Params(M)|Weights|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -21,9 +21,9 @@ StreakNet Benchmark
 |[StreakNet-x](./exps/streaknet/streaknet_s.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
 |(baseline)|41.07|4.64|00.0|00.00|---|---|
 
-## Dataset
+## 数据集
 <details>
-<summary>Introduction</summary>
+<summary>数据集简介</summary>
 
 **StreakData** is an underwater imaging dataset for **USCL** systems. It comprises a collection of streak images captured by a **USCL** system at distances of 10m, 13m, 15m, and 20m. See the table below to learn more details of the dataset.
 
