@@ -1,0 +1,16 @@
+torch==1.13.0
+torchvision==0.14.0
+numpy
+opencv_python
+tqdm
+icecream
+pyyaml
+tensorboard
+matplotlib
+loguru
+tabulate
+thop
+psutil
+
+onnx>=1.13.0
+onnx-simplifier==0.4.10
