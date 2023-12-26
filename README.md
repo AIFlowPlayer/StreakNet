@@ -121,7 +121,9 @@ python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py --cache
 > **-f**: specify the experiment profile.
 > **--cache**: use RAM cache when training
 
-**Attention**: When you use the --cache option, the program will pre-load the dataset to RAM to accelerate the training process. Make sure your server has at least 25GB RAM space free to run this option. If your RAM space is not enough, please disable the --cache option, then the program will load data from the disk directly when need. But this often takes 10x more training time.
+**Attention**: 
+(1) When you enable the --cache option, the program will preload the dataset into the RAM to accelerate the training process. Please ensure that your server has at least 25GB of free RAM space to use this option. If your RAM space is insufficient, please disable the --cache option. In that case, the program will load data directly from the disk when needed. However, this approach often results in 10 times longer training times.
+(2) The program will utilize CUDA to accelerate the training process. Please ensure that your server is equipped with at least one NVIDIA GPU with a graphics memory capacity of more than **2GB**.
 
 ```sh
 python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py
