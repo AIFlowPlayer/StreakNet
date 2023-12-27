@@ -181,7 +181,7 @@ python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/stre
 **Attention**: If you omit the -c option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
 
 ```sh
-python tools/demo.py --path datasets/clean_water_13m/data -f exps/streaknet/streaknet_s.py -b 512
+python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/streaknet_s.py -b 512
                                      clean_water_13m                        streaknet_m.py
                                      clean_water_15m                        streaknet_l.py
                                      clean_water_20m                        streaknet_x.py
