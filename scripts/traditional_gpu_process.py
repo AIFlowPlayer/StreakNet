@@ -145,20 +145,19 @@ outputs = [
     "StreakNet_outputs/traditional/2.png",
     "StreakNet_outputs/traditional/3.png"
 ]
-rates = [100, 100, 100, 50]
 
 
 if __name__ == "__main__":
     args = make_parse().parse_args()
     if args.img_dir is None:
         tp, fn, fp, tn = 0, 0, 0, 0
-        for img_dir_i, gd_i, num_i, rate_i, out_i in zip(img_dir, ground_truth, nums, rates, outputs):
+        for img_dir_i, gd_i, num_i, out_i in zip(img_dir, ground_truth, nums, outputs):
             print("processing {}...".format(img_dir_i))
             pred = main(template_path=tem_path, 
                         filename_format="{:03d}.tif",
                         data_dir=img_dir_i,
                         data_num=num_i,
-                        rate=rate_i,
+                        rate=args.rate,
                         batch_size=args.batch_size)
             gd = np.load(gd_i)
             tp_i, fn_i, fp_i, tn_i = valid(pred, gd)
