@@ -18,10 +18,10 @@ StreakNet Benchmark
 
 |Model|F1-Score (%)|PSNR (dB)|Speed V100 (ms/pixel)|Speed NX (ms/pixel)|Params(M)|Weights|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[BaiduDisk](#)|
-|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[BaiduDisk](#)|
-|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[BaiduDisk](#)|
-|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
+|[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[GoogleDrive](https://drive.google.com/file/d/1938oCFHBFmlaTmLYb7Jan1TOAy26-ge1/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1tT_aXlzfttNEWIaRVBpSng?pwd=8rai)|
+|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[GoogleDrive](https://drive.google.com/file/d/17vpuiSYOK8m-qOtA4yQTwv-hofZT0o_W/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1A2144Y7f0MMEOlNDcbCRrg?pwd=wnxv)|
+|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[GoogleDrive](https://drive.google.com/file/d/146c8fSDOPtsmUDedHA7jN704a8btBqtR/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1K9oOgCrI-t5MF8RuC62RSA?pwd=et43)|
+|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[GoogleDrive](https://drive.google.com/file/d/1c7VP4C7pFSd-kgZXpLitLLRty-g_Mlws/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1nvHj4aWo4pXhP0LJB78Tkg?pwd=fl8o)|
 |(baseline)|42.56|4.91|00.0|00.00|---|---|
 
 ## Dataset
