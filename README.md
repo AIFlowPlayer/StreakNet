@@ -1,11 +1,4 @@
-<div style="display: grid; grid-template-columns: 1fr auto;">
-  <div>
-  
-  [English](./README.md) | [中文](./README_CN.md)
-
-  </div>
-  <div><img src="./assets/iopen.jpg" width="200"></div>
-</div><br>
+<p><a href="./README.md">English</a> | <a href="./README_CN.md">中文</a><img src="./assets/iopen.jpg" width="200" style="float:right"></p><br>
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
 <div align="center"><img src="./assets/demo.png"></div>
