@@ -64,8 +64,8 @@ def main():
     model = replace_module(model, nn.SiLU, SiLU)
 
     logger.info("loading checkpoint done.")
-    signal_input = torch.randn(args.batch_size, 2, 2048 + round(2048 * exp.width * 0.5))
-    template_input = torch.randn(args.batch_size, 2, 2048 + round(2048 * exp.width * 0.5))
+    signal_input = torch.randn(args.batch_size, 2, 2048 + round(2048 * exp.width))
+    template_input = torch.randn(args.batch_size, 2, 2048 + round(2048 * exp.width))
 
     torch.onnx.export(
         model,
