@@ -8,6 +8,7 @@ import os
 import time
 import numpy as np
 from loguru import logger
+from matplotlib import pyplot as plt
 
 import cv2
 
@@ -133,8 +134,8 @@ def demo(predictor, vis_folder, path, tem_path, current_time, save_result, batch
     if save_result:
         cv2.imwrite(save_file_name, img)
     else:
-        cv2.imshow("demo", img)
-        cv2.waitKey(0)
+        plt.imshow(img, cmap='gray')
+        plt.show()
 
 
 def main(exp, args):
