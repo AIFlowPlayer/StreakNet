@@ -1,7 +1,6 @@
 [English](./README.md) | [中文](./README_CN.md) | [Gitee码云](#)
 
 <hr>
-<div align="right"><img src="./assets/iopen.jpg" width="300"></div><br>
 
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
@@ -23,7 +22,7 @@ StreakNet Benchmark
 |[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[BaiduDisk](#)|
 |[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[BaiduDisk](#)|
 |[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
-|(baseline)|41.07|4.64|00.0|00.00|---|---|
+|(baseline)|42.56|4.91|00.0|00.00|---|---|
 
 ## Dataset
 <details>
