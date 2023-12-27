@@ -238,7 +238,7 @@ python scripts/traditional_gpu_process.py
 2. [TensorRT in C++ and Python](#)
 
 ## Cite StreakNet
-If you use StreakNet in your research, please cite out work by using the following BibTeX entry:
+If you use StreakNet in your research, please cite our work by using the following BibTeX entry:
 
 ```latex
 @article{streaknet2024,
