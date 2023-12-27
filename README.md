@@ -260,5 +260,5 @@ If you use StreakNet in your research, please cite our work by using the followi
 
 <br>
 <div align="center"><img src="./assets/iopen.jpg" width="500"></div>
-<div align="center"><p>Copyright &copy; School of Artificial Intelligence, OPtics and ElectroNics(iOPEN), Northwestern PolyTechnical University. All righs reserved.</p></div>
+<div align="center"><p>Copyright &copy; School of Artificial Intelligence, OPtics and ElectroNics(iOPEN), Northwestern PolyTechnical University. <br>All righs reserved.</p></div>
 
