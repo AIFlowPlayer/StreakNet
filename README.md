@@ -1,14 +1,11 @@
-<div style="float:left">
+<div style="display: grid; grid-template-columns: 1fr auto;">
+  <div>
+  
+  [English](./README.md) | [中文](./README_CN.md)
 
-[English](./README.md) | [中文](./README_CN.md)
-
-</div>
-
-<div style="float:right">
-<img src="./assets/iopen.jpg" width="200">
-</div>
-
-<div style="clear:both"></div><br>
+  </div>
+  <div><img src="./assets/iopen.jpg" width="200"></div>
+</div><br>
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
 <div align="center"><img src="./assets/demo.png"></div>
