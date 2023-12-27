@@ -235,7 +235,7 @@ python scripts/traditional_gpu_process.py
 ## Deployment
 
 1. [ONNX export and an ONNXRuntime](./demo/ONNXRuntime/)
-2. [TensorRT in C++ and Python](#)
+2. [TensorRT in C++ and Python](./demo/TensorRT/)
 
 ## Cite StreakNet
 If you use StreakNet in your research, please cite our work by using the following BibTeX entry:
