@@ -115,7 +115,7 @@ def make_parse():
     parser.add_argument("-g", "--groundtruth", type=str)
     parser.add_argument("-f", "--file-format", type=str)
     parser.add_argument("-b", "--batch-size", type=int, default=16)
-    parser.add_argument("-r", "--rate", type=float, default=100)
+    parser.add_argument("-r", "--rate", type=float, default=50)
     parser.add_argument("-l", "--length", type=int)
     parser.add_argument("-o", "--output", type=str)
     return parser
