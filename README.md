@@ -1,4 +1,29 @@
-<p><a href="./README.md">English</a> | <a href="./README_CN.md">中文</a><img src="./assets/iopen.jpg" width="200" style="float:right"></p><br>
+<style>
+.floatleft {
+    float: left;
+}
+.floatright {
+    float: right;
+}
+.nofloat {
+    clear: both;
+}
+</style>
+
+<div class="floatleft>
+
+[English](./README.md) | [中文](./README_CN.md)
+
+</div>
+<div class="floatright">
+
+<img src="./assets/iopen.jpg" width="200">
+
+</div>
+<div class="nofloat"></div>
+
+
+<p><a href="./README.md">English</a> | <a href="./README_CN.md">中文</a><span align="right"><img src="./assets/iopen.jpg" width="200"></span></p><br>
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
 <div align="center"><img src="./assets/demo.png"></div>
