@@ -18,11 +18,11 @@ You can download our pre-generated ONNX models or convert your own models to ONN
 
 |Model|F1-Score (%)|PSNR (dB)|Speed V100 (ms/pixel)|Speed NX (ms/pixel)|Params(M)|ONNX model|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[BaiduDisk](#)|
-|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[BaiduDisk](#)|
-|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[BaiduDisk](#)|
-|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
-|(baseline)|41.07|4.64|00.0|00.00|---|---|
+|[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[GoogleDrive](https://drive.google.com/file/d/1bl1wOUOUa1P2M09YBhpxqFtcdCsJj8Nn/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/10AHB4miIgql7U1hoXpGseg?pwd=9tf8)|
+|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[GoogleDrive](https://drive.google.com/file/d/1MISQwfth7W1oBfA_6F-_8jd9wVD9Hogb/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1Xl9LCcEzYfjGiA570_BMNA?pwd=hqa3)|
+|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[GoogleDrive](https://drive.google.com/file/d/1TVIFacrYZ5sJn1ZF-GFqVhhAjNOk4NU7/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1kIhTgUe3FTC4lHodo_GEbQ?pwd=qr2b)|
+|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[GoogleDrive](https://drive.google.com/file/d/1RWVcuwDZtuFRGTuf-hFMgDl_l1gmyf_e/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1-rJW9AYXstQdQRnDbLHGnw?pwd=co56)|
+|(baseline)|42.56|4.91|00.0|00.00|---|---|
 
 #### Convert Your Model to ONNX
 
