@@ -255,7 +255,7 @@ If you use StreakNet in your research, please cite our work by using the followi
 
 ## Copyright
 
-> Developer: Hongjun An \
+> Developer: Hongjun An (Ph.D. Student)\
 > Supervisor: [Prof. Xuelong Li](https://iopen.nwpu.edu.cn/info/1329/1171.htm), [Assoc. Prof. Zhe Sun](https://iopen.nwpu.edu.cn/info/1251/2076.htm)
 
 <br>
