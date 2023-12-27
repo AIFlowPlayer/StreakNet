@@ -1,11 +1,21 @@
+<div style="float:left">
+
 [English](./README.md) | [中文](./README_CN.md)
 
-<div align="center"><img src="./assets/streaknet_logo.png" width="400"></div>
+</div>
+
+<div style="float:right">
+<img src="./assets/iopen.jpg" width="200">
+</div>
+
+<div style="clear:both"></div><br>
+
+<div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
 <div align="center"><img src="./assets/demo.png"></div>
 
 ## Introduction
 
-[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based network for underwater target detection in **Underwater Streak Camera LiDAR (USCL)** systems. It is capable of detecting underwater objects at a **millimeter-level** accuracy up to a distance of **20m**. For further details, please refer to our [paper](#).
+[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based neural network for underwater target detection in **Underwater Streak Camera LiDAR (USCL)** systems. It is capable of detecting underwater objects at a **millimeter-level** accuracy up to a distance of **20m**. For further details, please refer to our [paper](#).
 
 <div align="center"><img src="./assets/streaknet_architecture.png"></div>
 
@@ -16,9 +26,9 @@ StreakNet Benchmark
 |Model|F1-Score (%)|PSNR (dB)|Speed V100 (ms/pixel)|Speed NX (ms/pixel)|Params(M)|Weights|
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 |[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[BaiduDisk](#)|
-|[StreakNet-m](./exps/streaknet/streaknet_s.py)|85.87|8.91|00.0|00.00|3.15|[BaiduDisk](#)|
-|[StreakNet-l](./exps/streaknet/streaknet_s.py)|85.90|8.92|00.0|00.00|10.51|[BaiduDisk](#)|
-|[StreakNet-x](./exps/streaknet/streaknet_s.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
+|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[BaiduDisk](#)|
+|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[BaiduDisk](#)|
+|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[BaiduDisk](#)|
 |(baseline)|41.07|4.64|00.0|00.00|---|---|
 
 ## Dataset
