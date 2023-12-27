@@ -87,11 +87,18 @@ pip install -e .
 </details>
 
 <details>
-<summary>Reproduce Experimental Results</summary>
+<summary id="preparedataset">Prepare Dataset</summary>
 
-* Step1. Install the StreakNet module by following the [*Installation*](#quickstartinstallation) section.
+* Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
 
-* Step2. Download the [**StreakData**](#dataset) dataset from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), unzip it to *datasets* directory under the root directory of the project. Specifically, your project directory should look like this:
+* Step2. Create a directory named '*datasets*' under the root directory.
+
+```sh
+cd StreakNet
+mkdir datasets
+```
+
+* Step3. Download the [**StreakData**](#dataset) dataset from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), unzip it to the '*datasets*' directory. Specifically, your project directory should appear as follows:
 
 ```sh
 StreakNet
@@ -108,22 +115,26 @@ StreakNet
     |- ...
 ```
 
-* Step3. *cd* to the root directory of the project.
-```sh
-cd StreakNet
-```
+</details>
 
-* Step4. Run the following commands to train the respective models.
+<details>
+<summary id="reproduceexperimentalresults">Reproduce Experimental Results</summary>
+
+* Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
+
+* Step2. Prepare the [**StreakData**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
+
+* Step3. Run the following commands to train the respective models in the root directory.
 ```sh
 python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py --cache
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_m.py --cache
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_l.py --cache
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py --cache
+                                                    streaknet_m.py
+                                                    streaknet_l.py
+                                                    streaknet_x.py
 ```
-> Arguments:
-> **-b**: set the batch-size when training.
-> **-d**: set the number of GPU when training (Currently, only d=1 is supported).
-> **-f**: specify the experiment profile.
+> Arguments: \
+> **-b**: set the batch-size when training. \
+> **-d**: set the number of GPU when training (Currently, only d=1 is supported). \
+> **-f**: specify the experiment profile. \
 > **--cache**: use RAM cache when training
 
 **Attention**: 
@@ -134,15 +145,120 @@ python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py --cache
 
 ```sh
 python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_m.py
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_l.py
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_x.py
+                                                    streaknet_m.py
+                                                    streaknet_l.py
+                                                    streaknet_x.py
 ```
 
-* Step5. Real-time training status will be saved to *StreakNet_outputs* folder. Run *tensorboard* to visualize the status of the training process.
+* Step4. Real-time training status will be saved to *StreakNet_outputs* folder. Run *tensorboard* to visualize the status of the training process.
 
 ```sh
 tensorboard --logdir=StreakNet_outputs
 ```
 
 </details>
+
+<details>
+<summary>Demo</summary>
+
+* Step1. Download a pretrained model from the [benchmark](#benchmark) table. Alternatively, you can directly use the model you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+
+* Step2. Run the following command to start demo:
+
+```sh
+python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/streaknet_s.py -b 512 -c <path/to/your/pretrained/model/streaknet_s_ckpt.pth>
+                                     clean_water_13m                        streaknet_m.py                                          streaknet_m_ckpt.pth
+                                     clean_water_15m                        streaknet_l.py                                          streaknet_l_ckpt.pth
+                                     clean_water_20m                        streaknet_x.py                                          streaknet_x_ckpt.pth
+```
+
+> Arguments: \
+> **--path**: path to the streak images (.tif). \
+> **-f**: specify the experiment profile. \
+> **-b**: set the batch-size when inferring. \
+> **-c**: specify the model weights when inferring.
+
+**Attention**: If you omit the -c option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+
+```sh
+python tools/demo.py --path datasets/clean_water_13m/data -f exps/streaknet/streaknet_s.py -b 512
+                                     clean_water_13m                        streaknet_m.py
+                                     clean_water_15m                        streaknet_l.py
+                                     clean_water_20m                        streaknet_x.py
+```
+
+</details>
+
+<details>
+<summary>Evaluation</summary>
+
+* Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
+
+* Step2. Prepare the [**StreakData**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
+
+* Step3. Train models by following the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+
+* Step4. Evaluation.
+
+```sh
+python tools/valid.py -d 1 -b 512 -f exps/streaknet/streaknet_s.py --cache
+                                                    streaknet_m.py
+                                                    streaknet_l.py
+                                                    streaknet_x.py
+```
+
+> Arguments: \
+> **-b**: set the batch-size when training. \
+> **-d**: set the number of GPU when training (Currently, only d=1 is supported). \
+> **-f**: specify the experiment profile. \
+> **--cache**: use RAM cache when training
+
+</details>
+
+<details>
+<summary>Traditional Signal Processing Method</summary>
+
+* Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
+
+* Step2. Prepare the [**StreakData**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
+
+* Step3. Run traditional signal processing method.
+
+```sh
+python scripts/traditional_gpu_process.py
+```
+
+* The results will save to '*StreakNet_outputs/traditional*'.
+
+</details>
+
+## Deployment
+
+1. [ONNX export and an ONNXRuntime](#)
+2. [TensorRT in C++ and Python](#)
+
+## Cite StreakNet
+If you use StreakNet in your research, please cite out work by using the following BibTeX entry:
+
+```latex
+@article{streaknet2024,
+  title={xxx},
+  author={xxx},
+  journal={xxx},
+  year={2024}
+}
+```
+
+## Respect to Predecessors
+* During the development of this open-source project, we drew inspiration from the excellent engineering architecture of the [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) project by [Megvii](https://www.megvii.com/) Technology.  The project was led by [Dr. Jian Sun](https://baike.baidu.com/item/%E5%AD%99%E5%89%91/19814032) (1976.10-2022.6.14), a respected scientist, who made significant contributions to the advancement of computer vision.🕯️🕯️🕯️
+* We were deeply saddened to hear the news of the passing of [Prof. Xiaoou Tang](https://baike.baidu.com/item/%E6%B1%A4%E6%99%93%E9%B8%A5/7200225) (1968.1-2023.12.15) on December 16, 2023, shortly after completing all the preliminary experiments for this project.  Prof. Tang devoted his entire life to computer science research and made outstanding contributions to the advancement of computer vision and artificial intelligence. We express our utmost respect to Prof. Tang.🕯️🕯️🕯️
+
+## Copyright
+
+> Developer: Hongjun An \
+> Supervisor: [Prof. Xuelong Li](https://iopen.nwpu.edu.cn/info/1329/1171.htm), [Assoc. Prof. Zhe Sun](https://iopen.nwpu.edu.cn/info/1251/2076.htm)
+
+<br>
+<div align="center"><img src="./assets/iopen.jpg" width="500"></div>
+<div align="center"><p>Copyright &copy; <a href="https://iopen.nwpu.edu.cn/">School of Artificial Intelligence, OPtics and ElectroNics(iOPEN)</a>, <a href="https://www.nwpu.edu.cn/index.html">Northwestern PolyTechnical University</a>. All righs reserved.</p></div>
+
