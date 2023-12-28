@@ -262,5 +262,5 @@ python scripts/traditional_gpu_process.py
 
 <br>
 <div align="center"><img src="./assets/iopen.jpg" width="500"></div>
-<div align="center"><p>Copyright &copy; School of Artificial Intelligence, OPtics and ElectroNics(iOPEN), Northwestern PolyTechnical University. <br>All righs reserved.</p></div>
+<div align="center"><p>Copyright &copy; School of Artificial Intelligence, OPtics and ElectroNics(iOPEN), Northwestern PolyTechnical University. <br>All rights reserved.</p></div>
 
