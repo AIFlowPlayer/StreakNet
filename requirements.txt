@@ -11,6 +11,7 @@ loguru
 tabulate
 thop
 psutil
+scipy
 
 onnx>=1.13.0
 onnx-simplifier==0.4.10
