@@ -138,7 +138,7 @@ python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py --cache
 
 **Attention**: 
 
-(1) When you enable the --cache option, the program will preload the dataset into the RAM to accelerate the training process. Please ensure that your server has at least **25GB** of free RAM space to use this option. If your RAM space is insufficient, please disable the --cache option. In that case, the program will load data directly from the disk when needed. However, this approach often results in 10 times longer training times.
+(1) When you enable the `--cache` option, the program will preload the dataset into the RAM to accelerate the training process. Please ensure that your server has at least **25GB** of free RAM space to use this option. If your RAM space is insufficient, please disable the `--cache` option. In that case, the program will load data directly from the disk when needed. However, this approach often results in 10 times longer training times.
 
 (2) The program will utilize CUDA to accelerate the training process. Please ensure that your server is equipped with at least one NVIDIA GPU with a graphics memory capacity of more than **2GB**.
 
@@ -177,7 +177,7 @@ python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/stre
 > **-b**: set the batch-size when inferring. \
 > **-c**: specify the model weights when inferring.
 
-**Attention**: If you omit the -c option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+**Attention**: If you omit the `-c` option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
 
 ```sh
 python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/streaknet_s.py -b 512
@@ -207,10 +207,10 @@ python tools/valid.py -d 1 -b 512 -f exps/streaknet/streaknet_s.py --cache
 ```
 
 > Arguments: \
-> **-b**: set the batch-size when training. \
-> **-d**: set the number of GPU when training (Currently, only d=1 is supported). \
+> **-b**: set the batch-size when evaluating. \
+> **-d**: set the number of GPU when evaluating (Currently, only d=1 is supported). \
 > **-f**: specify the experiment profile. \
-> **--cache**: use RAM cache when training
+> **--cache**: use RAM cache when evaluating.
 
 </details>
 
@@ -249,7 +249,7 @@ If you use StreakNet in your research, please cite our work by using the followi
 ```
 
 ## Respect to Predecessors
-* During the development of this open-source project, we drew inspiration from the excellent engineering architecture of the [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) project by [Megvii](https://www.megvii.com/) Technology.  The project was led by [Dr. Jian Sun](https://baike.baidu.com/item/%E5%AD%99%E5%89%91/19814032) (1976.10-2022.6.14), a respected scientist, who made significant contributions to the advancement of computer vision.🕯️🕯️🕯️
+* During the development of this open-source project, we drew inspiration from the excellent engineering architecture of the [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) project by [Megvii](https://www.megvii.com/) Technology.  The YOLOX project was led by [Dr. Jian Sun](https://baike.baidu.com/item/%E5%AD%99%E5%89%91/19814032) (1976.10-2022.6.14), a respected scientist, who made significant contributions to the advancement of computer vision.🕯️🕯️🕯️
 * We were deeply saddened to hear the news of the passing of [Prof. Xiaoou Tang](https://baike.baidu.com/item/%E6%B1%A4%E6%99%93%E9%B8%A5/7200225) (1968.1-2023.12.15) on December 16, 2023, shortly after completing all the preliminary experiments for this project.  Prof. Tang devoted his entire life to computer science research and made outstanding contributions to the advancement of computer vision and artificial intelligence. We express our utmost respect to Prof. Tang.🕯️🕯️🕯️
 
 ## Copyright
