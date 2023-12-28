@@ -5,7 +5,7 @@
 
 from torch import nn 
 
-from .streak_embedding import DoubleBranchFFTEmbedding
+from .streak_embedding import FrequencyDomainFilteringEmbedding
 from .streak_backbone import StreakTransformerEncoder
 from .streak_head import SingleBranchClsHead
 
@@ -14,7 +14,7 @@ class StreakNet(nn.Module):
     def __init__(self, embedding=None, backbone=None, head=None):
         super(StreakNet, self).__init__()
         if embedding is None:
-            embedding = DoubleBranchFFTEmbedding()
+            embedding = FrequencyDomainFilteringEmbedding()
         if backbone is None:
             backbone = StreakTransformerEncoder()
         if head is None:

@@ -9,15 +9,12 @@ from torch import nn
 from .network_blocks import get_activation
 
 
-class FFTEmbeddingBlock(nn.Module):
-    def __init__(self, width=1.0, dropout=0.4, act='silu', concat_branches=True, export=False):
-        super(FFTEmbeddingBlock, self).__init__()
+class FrequencyDomainFilteringBlock(nn.Module):
+    def __init__(self, width=1.0, dropout=0.4, act='silu', export=False):
+        super(FrequencyDomainFilteringBlock, self).__init__()
         self.export = export
-        self.n_fft = 2048 + round(2048 * width)
-        if concat_branches:
-            self.embedding_size = round(1024 * width)
-        else:
-            self.embedding_size = round(512 * width)
+        self.n_fft = 4096
+        self.embedding_size = round(1024 * width)
         self.flatten = nn.Flatten(1)
         self.dense = nn.Linear(self.n_fft * 2, self.embedding_size)
         self.norm = nn.LayerNorm((self.embedding_size,))
@@ -44,19 +41,15 @@ class FFTEmbeddingBlock(nn.Module):
         return pred
 
 
-class DoubleBranchFFTEmbedding(nn.Module):
-    def __init__(self, width=1.0, dropout=0.4, act='silu', concat_branches=True, export=False):
-        super(DoubleBranchFFTEmbedding, self).__init__()
-        self.concat = concat_branches
-        self.signal_embedding_block = FFTEmbeddingBlock(width, dropout, act, concat_branches, export)
-        self.template_embedding_block = FFTEmbeddingBlock(width, dropout, act, concat_branches, export)
+class FrequencyDomainFilteringEmbedding(nn.Module):
+    def __init__(self, width=1.0, dropout=0.4, act='silu', export=False):
+        super(FrequencyDomainFilteringEmbedding, self).__init__()
+        self.signal_embedding_block = FrequencyDomainFilteringBlock(width, dropout, act, export)
+        self.template_embedding_block = FrequencyDomainFilteringBlock(width, dropout, act, export)
     
     def forward(self, signal, template):
         signal_embedding = self.signal_embedding_block(signal)
         template_embedding = self.template_embedding_block(template)
-        if self.concat:
-            ret = torch.concat([signal_embedding, template_embedding], dim=1)
-            return ret
-        else:
-            return signal_embedding, template_embedding
+        ret = torch.concat([signal_embedding, template_embedding], dim=1)
+        return ret
         
