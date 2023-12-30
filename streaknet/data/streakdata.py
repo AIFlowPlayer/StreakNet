@@ -32,13 +32,11 @@ class StreakData(Dataset):
         self.data_dir = []
         self.ground_truth = []
         self.col_list = []
+        self.template = []
         self.total_col = 0
         
         self.cache = cache
         self.data = None
-        
-        # template
-        self.template = np.load(os.path.join(data_dir, "template.npy"))
         
         for name in sub_datasets:
             # ground-truth
@@ -52,6 +50,10 @@ class StreakData(Dataset):
             # col-list
             self.col_list.append(self.ground_truth[-1].shape[1])
             self.total_col += self.col_list[-1]
+            
+            # template
+            path = os.path.join(data_dir, name, "template.npy")
+            self.template.append(np.load(path))
         
         # init index
         idx = []
@@ -106,7 +108,7 @@ class StreakData(Dataset):
         signal_tensor = torch.tensor(signal, dtype=torch.float32)
         gd_tensor = torch.tensor([gd], dtype=torch.int64)
         info_tensor = torch.tensor([idx, row, col], dtype=torch.int32)
-        template_tensor = torch.tensor(self.template, dtype=torch.float32)
+        template_tensor = torch.tensor(self.template[idx], dtype=torch.float32)
         
         if self.transform:
             signal_tensor, template_tensor, gd_tensor, info_tensor = \
