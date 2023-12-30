@@ -16,7 +16,7 @@ from loguru import logger
     
 
 class StreakData(Dataset):
-    def __init__(self, data_dir, config_file, transform=None, cache=False):
+    def __init__(self, data_dir, config_file, transform=None, cache=False, max_len=1024):
         if transform is not None:
             self.transform = transform()
         else:
@@ -53,7 +53,10 @@ class StreakData(Dataset):
             
             # template
             path = os.path.join(data_dir, name, "template.npy")
-            self.template.append(np.load(path))
+            template = np.load(path).astype(np.float32)
+            template_padding = np.full((max_len,), np.mean(template))
+            template_padding[:template.shape[0]] = template
+            self.template.append(template_padding)
         
         # init index
         idx = []
