@@ -50,7 +50,8 @@ def get_kernel():
 
 
 def get_wave_template(template_path:str):
-    match_wave = torch.tensor(np.load(template_path), dtype=torch.float32)[None, :].cuda()
+    match_wave = np.load(template_path).astype(np.float32)
+    match_wave = torch.tensor(match_wave, dtype=torch.float32)[None, :].cuda()
     local_wave_spec = torch.fft.fftshift(torch.fft.fft(match_wave, N_fft))
     local_wave_spec[:1, zeroFreq_idx-6:zeroFreq_idx+6+1] = 0    # 频谱置0，高通滤波
     local_wave_spec[:1, 1-1:2001-1+1] = 0                       # 频谱置0
@@ -80,7 +81,7 @@ def main(template_path:str, data_dir:str, data_num:int, rate: float, filename_fo
         
         yz, _ = torch.max(match_filt, dim=3)
         yz, _ = torch.max(yz, dim=2)
-        yz = yz[:, :, None] * 0.05
+        yz = yz[:, :, None] * 0.2
         
         m, _ = torch.max(match_filt, dim=3)
         
@@ -91,7 +92,6 @@ def main(template_path:str, data_dir:str, data_num:int, rate: float, filename_fo
     
     gray_img[gray_img > 255] = 255
     gray_img = gray_img.astype(np.uint8)
-    gray_img = cv2.equalizeHist(gray_img)
     return gray_img
 
 
@@ -137,8 +137,15 @@ ground_truth = [
     "datasets/clean_water_15m/groundtruth.npy",
     "datasets/clean_water_20m/groundtruth.npy"
 ]
-tem_path = "datasets/template.npy"
+# tem_path = ["datasets/template.npy"]
+tem_path = [
+    "datasets/clean_water_10m/template.npy",
+    "datasets/clean_water_13m/template.npy",
+    "datasets/clean_water_15m/template.npy",
+    "datasets/clean_water_13m/template.npy"
+]
 nums = [400, 349, 300, 267]
+rates = [200, 1000, 500, 100]
 outputs = [
     "StreakNet_outputs/traditional/0.png",
     "StreakNet_outputs/traditional/1.png",
@@ -151,13 +158,13 @@ if __name__ == "__main__":
     args = make_parse().parse_args()
     if args.img_dir is None:
         tp, fn, fp, tn = 0, 0, 0, 0
-        for img_dir_i, gd_i, num_i, out_i in zip(img_dir, ground_truth, nums, outputs):
+        for img_dir_i, gd_i, tem_i, rate_i, num_i, out_i in zip(img_dir, ground_truth, tem_path, rates, nums, outputs):
             print("processing {}...".format(img_dir_i))
-            pred = main(template_path=tem_path, 
+            pred = main(template_path=tem_i, 
                         filename_format="{:03d}.tif",
                         data_dir=img_dir_i,
                         data_num=num_i,
-                        rate=args.rate,
+                        rate=rate_i,
                         batch_size=args.batch_size)
             gd = np.load(gd_i)
             tp_i, fn_i, fp_i, tn_i = valid(pred, gd)
