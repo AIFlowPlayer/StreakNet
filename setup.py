@@ -40,10 +40,10 @@ def get_long_description():
 setuptools.setup(
     name="streaknet",
     version=get_streaknet_version(),
-    author="megvii basedet team",
+    author="Coder.AN",
     url="",
     package_dir=get_package_dir(),
-    packages=setuptools.find_packages(exclude=("tests", "tools")) + list(get_package_dir().keys()),
+    packages=setuptools.find_packages(exclude=("tools", "scripts")) + list(get_package_dir().keys()),
     python_requires=">=3.6",
     install_requires=get_install_requirements(),
     setup_requires=["wheel"],  # avoid building error when pip is not updated
