@@ -15,7 +15,7 @@ from tqdm import tqdm
 from loguru import logger
     
 
-class StreakData(Dataset):
+class StreakSignalDataset(Dataset):
     def __init__(self, data_dir, config_file, transform=None, cache=False, max_len=1024):
         if transform is not None:
             self.transform = transform()
@@ -121,4 +121,76 @@ class StreakData(Dataset):
     
     def __len__(self):
         return self.idx.shape[0]
+
+
+class StreakImageDataset(Dataset):
+    def __init__(
+        self, data_dir, 
+        template_path=None, 
+        groundtruth=False, 
+        transform=None, 
+        cache=False, 
+        max_len=1024
+    ):
+        if transform is not None:
+            self.transform = transform()
+        else:
+            self.transform = None
+        
+        # template
+        if template_path is None:
+            self.template_path = os.path.join(data_dir, "template.npy")
+        else:
+            self.template_path = template_path
+        template = np.load(self.template_path).astype(np.float32)
+        template_padding = np.full((max_len,), np.mean(template))
+        template_padding[:template.shape[0]] = template
+        self.template = template_padding
+        
+        # init vars
+        self.data = None
+        self.gd = None
+        self.cache = cache
+        self.data_dir = os.path.join(data_dir, "data") 
+        self.img_list = os.listdir(self.data_dir).sort()
+        
+        # ground-truth
+        if groundtruth:
+            self.gd = np.load(os.path.join(data_dir, "groundtruth.npy"))
+        
+        # cache
+        if self.cache:
+            self.data = np.zeros((len(self.img_list), 2048, 2048), dtype=np.uint16)
+            logger.info("Loading cache to RAM...")
+            for i, img_path in enumerate(tqdm(self.img_list)):
+                self.data[i] = cv2.imread(os.path.join(self.data_dir, img_path), -1)
+        else:
+            logger.info("You haven't used RAM cache, the program will read data from disk every time.")
+    
+    def __del__(self):
+        del self.template
+        del self.data_dir 
+        del self.img_list
+        del self.gd
+        if self.cache:
+            del self.data 
+        
+    def __getitem__(self, index):
+        if self.cache:
+            signal = self.data[index]
+        else:
+            signal = cv2.imread(os.path.join(self.data_dir, self.img_list[index]), -1)
+        signal = signal.astype(np.float32)
+        signal_tensor = torch.tensor(signal, dtype=torch.float32)
+        template_tensor = torch.tensor(self.template, dtype=torch.float32)
+        if self.transform:
+            signal_tensor, template_tensor = self.transform(signal_tensor, template_tensor)
+        if self.gd:
+            gd_tensor = torch.tensor(self.gd, dtype=torch.int64)
+            return signal_tensor, template_tensor, gd_tensor
+        else:
+            return signal_tensor, template_tensor
+    
+    def __len__(self):
+        return len(self.img_list)
     

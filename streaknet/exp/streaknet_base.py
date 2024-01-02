@@ -97,9 +97,9 @@ class Exp(BaseExp):
         return self.model
 
     def get_dataset(self, cache=False):
-        from streaknet.data import StreakData, StreakTransform
+        from streaknet.data import StreakSignalDataset, StreakTransform
         
-        return StreakData(
+        return StreakSignalDataset(
             data_dir=self.data_dir,
             config_file=self.train_config,
             transform=StreakTransform,
@@ -168,8 +168,8 @@ class Exp(BaseExp):
         return scheduler
     
     def get_eval_dataset(self, cache=False):
-        from streaknet.data import StreakData, StreakTransform
-        return StreakData(
+        from streaknet.data import StreakSignalDataset, StreakTransform
+        return StreakSignalDataset(
             data_dir=self.data_dir,
             config_file=self.valid_config,
             transform=StreakTransform,
@@ -177,8 +177,8 @@ class Exp(BaseExp):
         )
     
     def get_test_dataset(self, cache=False):
-        from streaknet.data import StreakData, StreakTransform 
-        return StreakData(
+        from streaknet.data import StreakSignalDataset, StreakTransform 
+        return StreakSignalDataset(
             data_dir=self.data_dir, 
             config_file=self.test_config, 
             transform=StreakTransform,

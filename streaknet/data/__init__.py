@@ -3,7 +3,7 @@
 # Author: Hongjun An (Coder.AN)
 # Email: an.hongjun@foxmail.com
 
-from .streakdata import StreakData
+from .streak_data import StreakSignalDataset, StreakImageDataset
 from .streak_transform import StreakTransform 
 from .streak_evaluator import *
 from .data_prefetcher import DataPrefetcher
