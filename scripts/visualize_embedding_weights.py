@@ -142,7 +142,7 @@ def main(exp, args):
     # signal_template_filter = get_filter(signal_template_weight)
     signal_radar_filter = standard(torch.absolute(signal_radar_filter)).cpu().numpy()
     # signal_template_filter = standard(torch.absolute(signal_template_filter)).cpu().numpy()
-    max_attention = (np.argmax(signal_radar_filter) - 2048) * 50 / 3
+    max_attention = np.argmax(signal_radar_filter[2048:]) * 50 / 3
     
     traditional_filter = torch.ones((8192,), dtype=torch.float)
     traditional_filter = band_pass_filter(traditional_filter)
@@ -159,7 +159,7 @@ def main(exp, args):
     # template_freq = np.fft.fftshift(np.fft.fft(template, 4096))
     # template_freq = np.absolute(template_freq)
     
-    fig, _ = plt.subplots()
+    fig, _ = plt.subplots(figsize=(14,8))
     fig.suptitle(args.experiment_name)
     plt.subplots_adjust(hspace=0.25)
     ax11 = plt.subplot(2, 1, 1)
@@ -168,13 +168,13 @@ def main(exp, args):
     ax11.plot(x_t, smooth_target_signal, color='r', label="smoothed")
     ax11.set_xlabel("Time(ns)")
     ax11.set_xlim([3, 27])
-    ax11.set_ylim([90, 200])
+    ax11.set_ylim([90, np.max(smooth_target_signal)])
     ax11.legend()
     
     ax31 = plt.subplot(2, 1, 2)
     ax31.set_title("Frequency Domain")
     ax32 = ax31.twinx()
-    ax31.plot(x_f, target_signal_freq, color='b', label="received signal")
+    ax31.plot(x_f, target_signal_freq + np.abs(np.min(target_signal_freq)) + 1e-6, color='b', label="received signal")
     ax32.plot(x_f2, traditional_filter, color='r', label="traditional band filter")
     ax32.plot(x_f, signal_radar_filter, color='g', label="deep learning filter")
     ax32.axvline(x=max_attention, color='gray', linestyle="--")
@@ -183,14 +183,19 @@ def main(exp, args):
     # ax32.text(500, -0.1,  "{:.2f}".format(500), color='gray', ha='center')
     ax31.set_xlabel("Frequency(MHz)")
     ax31.set_ylabel("Amplitude")
+    ax31.set_yscale("log")
     ax32.set_ylabel("Frequency Selectivity")
-    ax31.set_xlim([0, 2000])
-    ax31.set_ylim([-15000, 250000])
+    ax31.set_xlim([-20, 2000])
+    # ax31.set_ylim([-15000, 250000])
     ax32.set_ylim([-0.05, 1.3])
     ax31.legend(loc="upper left")
     ax32.legend(loc="upper right")
     
-    plt.show()
+    if args.save_result:
+        path = os.path.join(vis_folder, "visualize_embedding.png")
+        plt.savefig(path)
+    else:
+        plt.show()
         
         
 if __name__ == "__main__":
