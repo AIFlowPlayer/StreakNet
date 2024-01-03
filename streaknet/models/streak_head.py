@@ -13,7 +13,7 @@ class SingleBranchClsHead(nn.Module):
     def __init__(self, width=1.0, act='silu', loss='crossloss'):
         super(SingleBranchClsHead, self).__init__()
         self.flatten = nn.Flatten(start_dim=1)
-        self.fc = nn.Linear(round(1024 * width) * 2, 2)
+        self.fc = nn.Linear(round(512 * width) * 2, 2)
         self.act = get_activation(act, inplace=False)
         self.losses = get_loss(loss)
     

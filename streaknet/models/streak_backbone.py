@@ -13,9 +13,9 @@ class StreakTransformerEncoder(nn.Module):
     def __init__(self, width=1.0, depth=1.0, dropout=0.4, act='silu'):
         super(StreakTransformerEncoder, self).__init__()
         transformer_encoder_layer = nn.TransformerEncoderLayer(
-            d_model=round(1024 * width), 
+            d_model=round(512 * width), 
             nhead=round(16 * width), 
-            dim_feedforward=round(2 * 1024 * width),
+            dim_feedforward=round(2 * 512 * width),
             dropout=dropout,
             batch_first=True,
             activation=get_activation(act, inplace=False)

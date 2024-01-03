@@ -13,22 +13,24 @@ class FrequencyDomainFilteringBlock(nn.Module):
     def __init__(self, width=1.0, dropout=0.4, act='silu', export=False):
         super(FrequencyDomainFilteringBlock, self).__init__()
         self.export = export
-        self.n_fft = 4096
-        self.embedding_size = round(1024 * width)
+        self.embedding_size = round(512 * width)
         self.flatten = nn.Flatten(1)
-        self.dense = nn.Linear(self.n_fft * 2, self.embedding_size)
+        self.dense = nn.Linear(1000 * 2, self.embedding_size)
         self.norm = nn.LayerNorm((self.embedding_size,))
         self.dropout = nn.Dropout(dropout)
         self.act = get_activation(act, inplace=False)
     
     def forward(self, x):
         """ export mode:
-                x.shape:[batch, 2, self.n_fft]
+                x.shape:[batch, 2, 1000]
             else:
                 x.shape:[batch, len]
         """
         if not self.export:
-            signal_freq = torch.fft.fft(x, self.n_fft, dim=1)
+            # 满屏扫描时间30ns，CCD分辨率2048，采样频率68.27GHz
+            # 使用长度65536计算FFT，频率分辨率68.27GHz/65536=1.04MHz
+            signal_freq = torch.fft.rfft(x, 65536, dim=1)
+            signal_freq = signal_freq[:, :1000] # 只要0~1GHz
             signal_real = torch.real(signal_freq)
             signal_imag = torch.imag(signal_freq)
             concat_signal = torch.concat([signal_real, signal_imag], dim=1)
