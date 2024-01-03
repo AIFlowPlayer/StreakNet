@@ -229,7 +229,7 @@ def check_exp_value(exp: Exp):
         logger.warning("Your factor exp.width={:.3f} is not standard, it is suggested to set to 0.125, 0.25, 0.50 and 1.00.".format(exp.width))
     if exp.depth not in [0.125, 0.25, 0.50, 1.00]: 
         logger.warning("Your factor exp.depth={:.3f} is not standard, it is suggested to set to 0.125, 0.25, 0.50 and 1.00.".format(exp.depth))
-    embedding_size = round(1024 * exp.width)
+    embedding_size = round(512 * exp.width)
     num_heads = round(16 * exp.width)
     assert embedding_size % num_heads == 0, "Embedding size must be multiples of num_heads."
         
