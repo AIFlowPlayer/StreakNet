@@ -10,8 +10,10 @@ from loguru import logger
 from tqdm import tqdm
 
 import cv2
+from scipy.signal import convolve
 
 import torch
+from matplotlib import pyplot as plt
 
 from streaknet.exp import get_exp
 from streaknet.utils import get_model_info
@@ -39,10 +41,20 @@ def make_parser():
     )
     
     parser.add_argument(
-        "-t",
-        "--template",
-        default="datasets/template.npy",
-        type=str
+        "--path",
+        type=str, 
+        default="datasets/clean_water_10m"
+    )
+    
+    parser.add_argument(
+        "--row",
+        type=int,
+        default=0
+    )
+    parser.add_argument(
+        "--col",
+        type=int,
+        default=0
     )
 
     # exp file
@@ -55,6 +67,34 @@ def make_parser():
     )
 
     return parser
+
+
+def get_filter(weight):
+    weight = torch.abs(weight)
+    weight_sum = torch.sum(weight, dim=0)
+    weight_sum_real = weight_sum[:weight_sum.shape[0]//2]
+    weight_sum_imag = weight_sum[weight_sum.shape[0]//2:]
+    filter = torch.complex(weight_sum_real, weight_sum_imag)
+    filter = torch.fft.fftshift(filter)
+    return filter
+
+
+def standard(data):
+    data_min = data.min()
+    data_max = data.max()
+    return (data - data_min) / (data_max - data_min)
+
+
+def band_pass_filter(template_freq: torch.tensor):
+    if template_freq.shape[0] == 4096:
+        template_freq[2048-6:2048+6+1] = 0
+        template_freq[:2000] = 0
+        template_freq[2096:] = 0
+    elif template_freq.shape[0] == 8192:
+        template_freq[4096-12:4092+12+1] = 0
+        template_freq[:4000] = 0
+        template_freq[4192:] = 0
+    return template_freq
 
 
 def main(exp, args):
@@ -88,48 +128,67 @@ def main(exp, args):
         ckpt = ckpt["model"]
     model.load_state_dict(ckpt)
     
-    import matplotlib
-    from matplotlib import pyplot as plt 
+    x_t = [i*30/2048 for i in range(2048)]
+    x_t = np.array(x_t)
     
-    template = np.load(args.template)
-    template_fft = np.fft.fft(template, 2304)
-    template_fft = np.absolute(template_fft)
-    
-    plt.subplot(4, 1, 1)
-    plt.plot(template_fft)
-    plt.yscale("log")
+    x_f = [(i-2048)*50/3 for i in range(4096)]
+    x_f2 = [(i-4096)*25/3 for i in range(8192)]
+    x_f = np.array(x_f)
+    x_f2 = np.array(x_f2)
 
-    signal_weight = model.embedding.signal_embedding_block.dense.state_dict()['weight']
-    template_weight = model.embedding.template_embedding_block.dense.state_dict()['weight']
+    signal_radar_weight = model.embedding.signal_embedding_block.dense.state_dict()['weight']
+    # signal_template_weight = model.embedding.template_embedding_block.dense.state_dict()['weight']
+    signal_radar_filter = get_filter(signal_radar_weight)
+    # signal_template_filter = get_filter(signal_template_weight)
+    signal_radar_filter = standard(torch.absolute(signal_radar_filter)).cpu().numpy()
+    # signal_template_filter = standard(torch.absolute(signal_template_filter)).cpu().numpy()
+    max_attention = (np.argmax(signal_radar_filter) - 2048) * 50 / 3
     
-    # template_weight = model.embedding.signal_embedding_block.dense.state_dict()['weight']
-    signal_weight = torch.abs(signal_weight)
-    template_weight = torch.abs(template_weight)
-    signal_cnt = torch.sum(signal_weight, dim=0)
-    template_cnt = torch.sum(template_weight, dim=0)
-    signal_cnt_real = signal_cnt[:signal_cnt.shape[0]//2]
-    signal_cnt_imag = signal_cnt[signal_cnt.shape[0]//2:]
-    template_cnt_real = template_cnt[:template_cnt.shape[0]//2]
-    template_cnt_imag = template_cnt[template_cnt.shape[0]//2:]
-    signal_attention = torch.sqrt(signal_cnt_real ** 2 + signal_cnt_imag ** 2)
-    template_attention = torch.sqrt(template_cnt_real ** 2 + template_cnt_imag ** 2)
-    signal_attention = torch.nn.functional.softmax(signal_attention)
-    template_attention = torch.nn.functional.softmax(template_attention)
+    traditional_filter = torch.ones((8192,), dtype=torch.float)
+    traditional_filter = band_pass_filter(traditional_filter)
     
-    # h = torch.tensor([[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]], dtype=torch.float32) / 20
-    # attention = torch.nn.functional.conv1d(attention.unsqueeze(0), h, None)[0]
+    img = cv2.imread(os.path.join(args.path, "data", "{:03d}.tif".format(args.col)), -1)
+    target_signal = img[args.row, :]
+    target_signal_freq = np.fft.fftshift(np.fft.fft(target_signal, 4096))
     
-    plt.subplot(4, 1, 2)
-    plt.plot(signal_attention.cpu().numpy())
-    plt.yscale("log")
+    h = [1] * 15
+    h = np.array(h, dtype=np.float) / 15
+    smooth_target_signal = convolve(target_signal, h, 'same')
     
-    plt.subplot(4, 1, 3)
-    plt.plot(template_attention.cpu().numpy())
-    plt.yscale("log")
+    # template = np.load(args.template)
+    # template_freq = np.fft.fftshift(np.fft.fft(template, 4096))
+    # template_freq = np.absolute(template_freq)
     
-    plt.subplot(4, 1, 4)
-    plt.plot(template_attention.cpu().numpy() * template_fft)
-    plt.yscale("log")
+    fig, _ = plt.subplots()
+    fig.suptitle(args.experiment_name)
+    plt.subplots_adjust(hspace=0.25)
+    ax11 = plt.subplot(2, 1, 1)
+    ax11.set_title("Time Domain")
+    ax11.plot(x_t, target_signal, color='gray', label="received signal")
+    ax11.plot(x_t, smooth_target_signal, color='r', label="smoothed")
+    ax11.set_xlabel("Time(ns)")
+    ax11.set_xlim([3, 27])
+    ax11.set_ylim([90, 200])
+    ax11.legend()
+    
+    ax31 = plt.subplot(2, 1, 2)
+    ax31.set_title("Frequency Domain")
+    ax32 = ax31.twinx()
+    ax31.plot(x_f, target_signal_freq, color='b', label="received signal")
+    ax32.plot(x_f2, traditional_filter, color='r', label="traditional band filter")
+    ax32.plot(x_f, signal_radar_filter, color='g', label="deep learning filter")
+    ax32.axvline(x=max_attention, color='gray', linestyle="--")
+    ax32.text(max_attention, -0.2,  "{:.2f}".format(max_attention), color='gray', ha='center')
+    ax32.axvline(x=500, color='gray', linestyle="--")
+    # ax32.text(500, -0.1,  "{:.2f}".format(500), color='gray', ha='center')
+    ax31.set_xlabel("Frequency(MHz)")
+    ax31.set_ylabel("Amplitude")
+    ax32.set_ylabel("Frequency Selectivity")
+    ax31.set_xlim([0, 2000])
+    ax31.set_ylim([-15000, 250000])
+    ax32.set_ylim([-0.05, 1.3])
+    ax31.legend(loc="upper left")
+    ax32.legend(loc="upper right")
     
     plt.show()
         
