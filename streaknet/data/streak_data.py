@@ -152,7 +152,8 @@ class StreakImageDataset(Dataset):
         self.gd = None
         self.cache = cache
         self.data_dir = os.path.join(data_dir, "data") 
-        self.img_list = os.listdir(self.data_dir).sort()
+        self.img_list = os.listdir(self.data_dir)
+        self.img_list.sort()
         
         # ground-truth
         if groundtruth:
