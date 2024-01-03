@@ -7,6 +7,7 @@ import os
 import cv2
 import yaml
 import numpy as np
+from typing import Union
 
 import torch
 from torch.utils.data import Dataset
@@ -16,17 +17,20 @@ from loguru import logger
     
 
 class StreakSignalDataset(Dataset):
-    def __init__(self, data_dir, config_file, transform=None, cache=False, max_len=1024):
+    def __init__(self, data_dir, config_file: Union[str, dict], transform=None, cache=False, max_len=1024):
         if transform is not None:
             self.transform = transform()
         else:
             self.transform = None
         
         # read config file
-        with open(os.path.join(data_dir, config_file), "r") as f:
-            data = yaml.load(f.read(), Loader=yaml.FullLoader)
-            sub_datasets = data["sub_datasets"]
-            config = data["config"]
+        if isinstance(config_file, str):
+            with open(os.path.join(data_dir, config_file), "r") as f:
+                data = yaml.load(f.read(), Loader=yaml.FullLoader)
+        elif isinstance(config_file, dict):
+            data = config_file
+        sub_datasets = data["sub_datasets"]
+        config = data["config"]
         
         # init vars
         self.data_dir = []
