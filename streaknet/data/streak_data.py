@@ -158,6 +158,7 @@ class StreakImageDataset(Dataset):
         self.data_dir = os.path.join(data_dir, "data") 
         self.img_list = os.listdir(self.data_dir)
         self.img_list.sort()
+        self.nums = len(self.img_list)
         
         # ground-truth
         if groundtruth:
@@ -197,5 +198,5 @@ class StreakImageDataset(Dataset):
             return signal_tensor, template_tensor
     
     def __len__(self):
-        return len(self.img_list)
+        return self.nums
     
