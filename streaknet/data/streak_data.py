@@ -189,13 +189,14 @@ class StreakImageDataset(Dataset):
         signal = signal.astype(np.float32)
         signal_tensor = torch.tensor(signal, dtype=torch.float32)
         template_tensor = torch.tensor(self.template, dtype=torch.float32)
+        idx_tensor = torch.tensor([index], dtype=torch.int32)
         if self.transform:
             signal_tensor, template_tensor = self.transform(signal_tensor, template_tensor)
         if self.gd:
             gd_tensor = torch.tensor(self.gd, dtype=torch.int64)
-            return signal_tensor, template_tensor, gd_tensor
+            return signal_tensor, template_tensor, gd_tensor, idx_tensor
         else:
-            return signal_tensor, template_tensor
+            return signal_tensor, template_tensor, idx_tensor
     
     def __len__(self):
         return self.nums
