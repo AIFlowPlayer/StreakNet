@@ -57,8 +57,12 @@ class StreakNetV2(nn.Module):
     def forward(self, signal, template, targets=None):
         embedding = self.embedding(signal, template)
         if isinstance(embedding, tuple):
-            outs = self.backbone(embedding[0], embedding[1])
-            outs = torch.concat([outs[0], outs[1]], 1)
+            if isinstance(self.backbone, DoubleBranchCrossAttention):
+                outs = self.backbone(embedding[0], embedding[1])
+                outs = torch.concat([outs[0], outs[1]], 1)
+            else:
+                embedding = torch.concat([embedding[0], embedding[1]], dim=1)
+                outs = self.backbone(embedding)
         else:
             outs = self.backbone(embedding)
             
