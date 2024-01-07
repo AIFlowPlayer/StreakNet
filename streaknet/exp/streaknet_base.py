@@ -50,7 +50,7 @@ class Exp(BaseExp):
         # epoch number used for warmup
         self.warmup_epochs = 1
         # max training epoch
-        self.max_epoch = 40
+        self.max_epoch = 120
         # minimum learning rate during warmup
         self.warmup_lr = 0
         self.min_lr_ratio = 0.05
