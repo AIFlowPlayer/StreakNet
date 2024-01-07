@@ -27,7 +27,7 @@ class Exp(BaseExp):
         self.dropout = 0.40
         # activation name. For example, if using "relu", then "silu" will be replaced to "relu".
         self.act = "silu"
-        # loss function: ["streakloss", "crossloss"]
+        # loss function: ["crossloss"]
         self.loss = "crossloss"
 
         # ---------------- dataloader config ---------------- #
@@ -85,12 +85,12 @@ class Exp(BaseExp):
     def get_model(self, export=False):
         from streaknet.models import FrequencyDomainFilteringEmbedding
         from streaknet.models import StreakTransformerEncoder
-        from streaknet.models import SingleBranchClsHead, StreakNet
+        from streaknet.models import ImagingHead, StreakNet
 
         if getattr(self, "model", None) is None:
-            embedding = FrequencyDomainFilteringEmbedding(self.width, self.dropout, self.act, export=export)
+            embedding = FrequencyDomainFilteringEmbedding(self.width, self.act, export=export)
             backbone = StreakTransformerEncoder(self.width, self.depth, self.dropout, self.act)
-            head = SingleBranchClsHead(self.width, self.act, self.loss)
+            head = ImagingHead(self.width, self.act, self.loss)
             self.model = StreakNet(embedding, backbone, head)
 
         self.model.train()

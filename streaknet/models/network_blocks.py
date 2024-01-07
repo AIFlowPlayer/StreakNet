@@ -6,7 +6,7 @@
 import torch
 from torch import nn
 
-from .streak_loss import StreakLoss, CrossLoss
+from .streak_loss import CrossLoss
 
 
 def get_activation(name="silu", inplace=False):
@@ -22,9 +22,7 @@ def get_activation(name="silu", inplace=False):
 
 
 def get_loss(name="streakloss"):
-    if name == "streakloss":
-        module = StreakLoss()
-    elif name == "crossloss":
+    if name == "crossloss":
         module = CrossLoss()
     else:
         raise AttributeError("Unsupported loss type: {}".format(name))

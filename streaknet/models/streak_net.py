@@ -7,7 +7,7 @@ from torch import nn
 
 from .streak_embedding import FrequencyDomainFilteringEmbedding
 from .streak_backbone import StreakTransformerEncoder
-from .streak_head import SingleBranchClsHead
+from .streak_head import ImagingHead
 
 
 class StreakNet(nn.Module):
@@ -18,7 +18,7 @@ class StreakNet(nn.Module):
         if backbone is None:
             backbone = StreakTransformerEncoder()
         if head is None:
-            backbone = SingleBranchClsHead()
+            backbone = ImagingHead()
         
         self.embedding = embedding
         self.backbone = backbone
@@ -30,7 +30,7 @@ class StreakNet(nn.Module):
         
         if self.training:
             assert targets is not None
-            outputs = self.head(outs, targets)
+            outputs = self.head(outs, labels=targets)
         else:
             outputs = self.head(outs)
         

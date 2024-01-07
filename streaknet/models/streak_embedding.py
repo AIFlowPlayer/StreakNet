@@ -10,14 +10,13 @@ from .network_blocks import get_activation
 
 
 class FrequencyDomainFilteringBlock(nn.Module):
-    def __init__(self, width=1.0, dropout=0.4, act='silu', export=False):
+    def __init__(self, width=1.0, act='silu', export=False):
         super(FrequencyDomainFilteringBlock, self).__init__()
         self.export = export
         self.embedding_size = round(512 * width)
         self.flatten = nn.Flatten(1)
+        self.norm = nn.LayerNorm((4000 * 2,))
         self.dense = nn.Linear(4000 * 2, self.embedding_size)
-        self.norm = nn.LayerNorm((self.embedding_size,))
-        self.dropout = nn.Dropout(dropout)
         self.act = get_activation(act, inplace=False)
     
     def forward(self, x):
@@ -37,17 +36,16 @@ class FrequencyDomainFilteringBlock(nn.Module):
         else:
             concat_signal = x
         concat_signal = self.flatten(concat_signal).unsqueeze(1)
-        pred = self.norm(self.dense(concat_signal))
-        pred = self.dropout(pred)
+        pred = self.dense(self.norm(concat_signal))
         pred = self.act(pred)
         return pred
 
 
 class FrequencyDomainFilteringEmbedding(nn.Module):
-    def __init__(self, width=1.0, dropout=0.4, act='silu', export=False):
+    def __init__(self, width=1.0, act='silu', export=False):
         super(FrequencyDomainFilteringEmbedding, self).__init__()
-        self.signal_embedding_block = FrequencyDomainFilteringBlock(width, dropout, act, export)
-        self.template_embedding_block = FrequencyDomainFilteringBlock(width, dropout, act, export)
+        self.signal_embedding_block = FrequencyDomainFilteringBlock(width, act, export)
+        self.template_embedding_block = FrequencyDomainFilteringBlock(width,act, export)
     
     def forward(self, signal, template):
         signal_embedding = self.signal_embedding_block(signal)

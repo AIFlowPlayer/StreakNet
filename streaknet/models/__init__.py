@@ -6,6 +6,5 @@
 from .network_blocks import get_activation
 from .streak_backbone import StreakTransformerEncoder
 from .streak_embedding import FrequencyDomainFilteringEmbedding
-from .streak_head import SingleBranchClsHead
-from .streak_loss import StreakLoss
+from .streak_head import ImagingHead
 from .streak_net import StreakNet
