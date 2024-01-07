@@ -5,4 +5,5 @@
 
 from .base_exp import BaseExp
 from .streaknet_base import Exp, check_exp_value
+from .streaknetv2_base import Expv2
 from .build import get_exp
