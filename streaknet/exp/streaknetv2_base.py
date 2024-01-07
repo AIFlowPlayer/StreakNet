@@ -26,7 +26,7 @@ class Expv2(Expv1):
         if getattr(self, "model", None) is None:
             embedding = DoubleBranchFrequencyDomainEmbedding(self.width, self.act, concat=False, export=export)
             backbone = DoubleBranchCrossAttention(self.width, self.depth, self.dropout, self.act)
-            head = ImagingHead(self.width, self.act, self.loss)
+            head = ImagingHead(self.width, self.act, self.loss, len=4)
             self.model = StreakNetV2(embedding, backbone, head)
 
         self.model.train()

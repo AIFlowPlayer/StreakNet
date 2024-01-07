@@ -77,9 +77,9 @@ class DoubleBranchCrossAttention(nn.Module):
         super(DoubleBranchCrossAttention, self).__init__()
         
         attention_layer = DoubleBranchCrossAttentionLayer(
-            d_model=round(256 * width),
+            d_model=round(512 * width),
             nhead=round(16 * width),
-            dim_feedforward=round(256 * 2 * width),
+            dim_feedforward=round(512 * 2 * width),
             dropout=dropout,
             activation=get_activation(act, False)
         )

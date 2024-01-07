@@ -58,9 +58,7 @@ class StreakNetV2(nn.Module):
         embedding = self.embedding(signal, template)
         if isinstance(embedding, tuple):
             outs = self.backbone(embedding[0], embedding[1])
-            outs_sig = self.flatten(outs[0])
-            outs_tem = self.flatten(outs[1])
-            outs = torch.stack([outs_sig, outs_tem], 1)
+            outs = torch.concat([outs[0], outs[1]], 1)
         else:
             outs = self.backbone(embedding)
             

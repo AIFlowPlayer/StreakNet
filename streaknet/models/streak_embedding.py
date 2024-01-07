@@ -58,7 +58,7 @@ class DoubleBranchEmbeddingBlock(nn.Module):
     def __init__(self, width=1.0, act='silu', export=False):
         super(DoubleBranchEmbeddingBlock, self).__init__()
         self.export = export
-        self.embedding_size = round(256 * width)
+        self.embedding_size = round(512 * width)
         self.norm = nn.LayerNorm((4000,))
         self.real_dense = nn.Linear(4000, self.embedding_size)
         self.imag_dense = nn.Linear(4000, self.embedding_size)

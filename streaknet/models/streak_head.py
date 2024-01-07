@@ -10,10 +10,10 @@ from .network_blocks import get_activation, get_loss
 
 
 class ImagingHead(nn.Module):
-    def __init__(self, width=1.0, act='silu', loss='crossloss'):
+    def __init__(self, width=1.0, act='silu', loss='crossloss', len=2):
         super(ImagingHead, self).__init__()
         self.flatten = nn.Flatten(start_dim=1)
-        self.fc = nn.Linear(round(512 * width) * 2, 2)
+        self.fc = nn.Linear(round(512 * width) * len, 2)
         self.act = get_activation(act, inplace=False)
         self.losses = get_loss(loss)
     
