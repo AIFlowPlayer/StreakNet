@@ -24,12 +24,10 @@ from streaknet.data import cal_valid_results, cal_image_valid_results
 def make_parse():
     parser = argparse.ArgumentParser("Band Pass Filter Algorithm.")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
-    # parser.add_argument("-i", "--data-dir", type=str)
-    # parser.add_argument("-t", "--template", type=str, default=None, help="The path of template signal file.")
     parser.add_argument("-b", "--batch-size", type=int, default=2)
     parser.add_argument("-f", "--exp_file", default=None, type=str, help="please input your experiment description file")
-    parser.add_argument("-l", "--lower", type=float, default=100, help="Lower bound of Band Pass Filter, MHz")
-    parser.add_argument("-u", "--upper", type=float, default=800, help="Upper bound of Band Pass Filter, MHz")
+    parser.add_argument("-l", "--lower", type=float, default=450, help="Lower bound of Band Pass Filter, MHz")
+    parser.add_argument("-u", "--upper", type=float, default=550, help="Upper bound of Band Pass Filter, MHz")
     parser.add_argument("-d", "--device", type=str, default='cpu', help="Select device.")
     parser.add_argument("--save", default=False, action="store_true")
     parser.add_argument("--cache", action="store_true", default=False)
@@ -56,7 +54,7 @@ def get_filter(args, max_len=4000):
         filter = torch.ones((1, 1, max_len), dtype=torch.float32)
         filter[:, :, :lower] = 0
         filter[:, :, upper:] = 0
-        file_name = os.path.join("StreakNet_outputs", "traditional", "bandpass_{}_{}".format(lower, upper))
+        file_name = os.path.join("StreakNet_outputs", "traditional", "bandpass_{}_{}".format(args.lower, args.upper))
         return filter, file_name
     else:
         exp = get_exp(args.exp_file)
