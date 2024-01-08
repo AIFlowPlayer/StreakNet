@@ -6,6 +6,7 @@
 import os
 import cv2
 import yaml
+import pandas as pd
 import argparse
 from loguru import logger
 import numpy as np
@@ -177,12 +178,34 @@ def merge_result(results):
     return ret
 
 
+def log_result(result):
+    logger.info("[Mask] Accuracy:{:.3f}% Precision:{:.3f}% Recall:{:.3f}% F1-Score:{:.3f}% PSNR:{:.4f}".format(
+        result["mask"]["accuracy"] * 100, result["mask"]["precision"] * 100, 
+        result["mask"]["recall"] * 100, result["mask"]["F1-Score"] * 100, result["mask"]["PSNR"]
+    ))
+    logger.info("[Image] PSNR:{:.4f} CNR:{:.4f}".format(result["image"]["PSNR"], result["image"]["CNR"]))
+    logger.info("[Deep] Variance:{:.4f}".format(result["deep"]["variance"]))
+
+
+def to_excel(excel_result, result, bias):
+    excel_result[0, bias*7] = result["mask"]["accuracy"]
+    excel_result[0, bias*7 + 1] = result["mask"]["precision"]
+    excel_result[0, bias*7 + 2] = result["mask"]["recall"]
+    excel_result[0, bias*7 + 3] = result["mask"]["F1-Score"]
+    excel_result[0, bias*7 + 4] = result["image"]["PSNR"]
+    excel_result[0, bias*7 + 5] = result["image"]["CNR"]
+    excel_result[0, bias*7 + 6] = result["deep"]["variance"]
+    return excel_result
+    
+
 def main(args):
     device = torch.device(args.device)
     filter, file_name = get_filter(args, 4000)
     filter = filter.to(device)
     if args.save:
         os.makedirs(file_name, exist_ok=True)
+        if os.path.exists(os.path.join(file_name, "band_pass_log.txt")):
+            os.remove(os.path.join(file_name, "band_pass_log.txt"))
         setup_logger(file_name, distributed_rank=0, filename="bandpass_log.txt", mode="override")
     
     with open(os.path.join("datasets", "valid_config.yaml"), "r") as f:
@@ -191,8 +214,9 @@ def main(args):
     config = data["config"]
     
     results = []
+    excel_results = np.zeros((1, 7*(len(sub_datasets)+1)), dtype=np.float32)
     
-    for config_i in config:
+    for i, config_i in enumerate(config):
         index = config_i["sub_idx"]
         row = config_i["row_slice"]
         col = config_i["col_slice"]
@@ -208,6 +232,8 @@ def main(args):
             deep_img[row[0]:row[1], col[0]:col[1]], 
             mask[row[0]:row[1], col[0]:col[1]], 
             truth_img[row[0]:row[1], col[0]:col[1]])
+        log_result(result)
+        excel_results = to_excel(excel_results, result, i + 1)
         results.append(result)
         
         fig = plt.figure(figsize=(12, 6))
@@ -231,14 +257,15 @@ def main(args):
         else:
             plt.show()
     
+    logger.info("--> Macro-Average:")
     result = merge_result(results)
-    logger.info("[Mask] Accuracy:{:.3f}% Precision:{:.3f}% Recall:{:.3f}% F1-Score:{:.3f}% PSNR:{:.4f}".format(
-        result["mask"]["accuracy"] * 100, result["mask"]["precision"] * 100, 
-        result["mask"]["recall"] * 100, result["mask"]["F1-Score"] * 100, result["mask"]["PSNR"]
-    ))
-    logger.info("[Image] PSNR:{:.4f} CNR:{:.4f}".format(result["image"]["PSNR"], result["image"]["CNR"]))
-    logger.info("[Deep] Variance:{:.4f}".format(result["deep"]["variance"]))
-
+    log_result(result)
+    excel_results = to_excel(excel_results, result, 0)
+    
+    if args.save:
+        df = pd.DataFrame(excel_results)
+        df.to_excel(os.path.join(file_name, "bandpass_log.xlsx"), index=False, engine='openpyxl')
+    
 
 if __name__ == "__main__":
     args = make_parse().parse_args()
