@@ -4,6 +4,7 @@
 # Email: an.hongjun@foxmail.com
 
 import copy
+import torch
 from torch import nn 
 
 from .network_blocks import get_activation, AddNorm
@@ -85,11 +86,13 @@ class DoubleBranchCrossAttention(nn.Module):
         )
         self.layers = _get_clones(attention_layer, N=round(8 * depth))
     
-    def forward(self, signal, template):
-        out_sig, out_tem = signal, template
+    def forward(self, x):
+        out_sig = x[:, :1, :]
+        out_tem = x[:, 1:, :]
         for layer in self.layers:
             out_sig, out_tem = layer(out_sig, out_tem)
-        return out_sig, out_tem
+        pred = torch.concat([out_sig, out_tem], dim=1)
+        return pred
 
 
 def _get_clones(module, N):

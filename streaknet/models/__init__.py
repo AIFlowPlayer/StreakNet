@@ -7,6 +7,5 @@ from .network_blocks import get_activation
 from .streak_backbone import StreakTransformerEncoder
 from .streak_backbone import DoubleBranchCrossAttention
 from .streak_embedding import FrequencyDomainFilteringEmbedding
-from .streak_embedding import DoubleBranchFrequencyDomainEmbedding
 from .streak_head import ImagingHead
-from .streak_net import StreakNet, StreakNetV2
+from .streak_net import StreakNet
