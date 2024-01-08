@@ -29,7 +29,7 @@ def make_parser():
         "--path", type=str, default="./datasets/clean_water_10m/data", help="path to streak images"
     )
     parser.add_argument(
-        "--template", type=str, default="./datasets/template.npy", help="path to template signal"
+        "--template", type=str, default="./datasets/clean_water_10m/template.npy", help="path to template signal"
     )
     
     parser.add_argument(
