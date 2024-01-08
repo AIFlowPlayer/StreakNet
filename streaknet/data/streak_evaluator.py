@@ -34,6 +34,20 @@ def cal_rates(tp, fn, fp, tn, eps=1e-6):
     return acc, precision, recall, f1, psnr
 
 
+def cal_image_valid_results(preds, labels, eps=1e-6):
+    labels = labels * 255
+    mse = np.mean(np.power(preds - labels, 2))
+    psnr = 10 * np.log10(255 ** 2 / mse + eps)
+    
+    u_roi = np.mean(preds[labels > 127])
+    u_noise = np.mean(preds[labels < 127])
+    sig_roi = np.var(preds[labels > 127])
+    sig_noise = np.var(preds[labels < 127])
+    cnr = np.abs(u_roi - u_noise) / np.sqrt(sig_roi + sig_noise)
+    
+    return psnr, cnr
+
+
 def cal_valid_results(preds, labels, eps=1e-6, origin=False):
     tp = (preds[labels == 1] == 1).sum()
     fn = (preds[labels == 1] == 0).sum()
