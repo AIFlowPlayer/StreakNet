@@ -18,8 +18,8 @@ from torch.utils.data import DataLoader
 
 from streaknet.exp import get_exp
 from streaknet.data import StreakImageDataset
-from streaknet.utils import standard, get_model_info, setup_logger
-from streaknet.data import cal_valid_results, cal_image_valid_results
+from streaknet.utils import standard, setup_logger, hilbert
+from streaknet.utils import valid, merge_result, log_result, to_excel
 
 
 def make_parse():
@@ -63,7 +63,6 @@ def get_filter(args, max_len=4000):
             args.experiment_name = exp.exp_name
             
         model = exp.get_model()
-        logger.info("Model Summary: {}".format(get_model_info(model)))
         logger.info("Model Structure:\n{}".format(str(model)))
         
         file_name = os.path.join(exp.output_dir, args.experiment_name)
@@ -100,6 +99,7 @@ def band_pass_filter_algorithm(dataset, batch_size, filter, device=torch.device(
         img_freq[:, :, 4000:] = 0
         img_freq[:, :, :4000] *= filter
         match_filt = torch.absolute(torch.fft.irfft(tem_freq * img_freq, dim=2)[:, :, :2048])
+        match_filt = hilbert(match_filt)
         
         # 确定最大响应及其时间
         max_resp, max_resp_index = torch.max(match_filt, dim=2)
@@ -116,86 +116,16 @@ def band_pass_filter_algorithm(dataset, batch_size, filter, device=torch.device(
     deep_img = deep_img.cpu().numpy()
     
     # 抑制背景噪声
-    _, mask = cv2.threshold(gray_img, 0, 1, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    _, mask_otsu = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+    mask_adap = cv2.adaptiveThreshold(gray_img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 65, 2)
+    mask_otsu //= 255
+    mask_adap //= 255
+    mask = mask_otsu * mask_adap
+        
     gray_img *= mask
     deep_img *= mask
 
     return gray_img, deep_img, mask, truth_img
-
-
-def valid(gray_img, deep_img, mask, truth_mask):
-    acc, precision, recall, f1, cls_psnr = cal_valid_results(mask, truth_mask)
-    img_psnr, img_cnr = cal_image_valid_results(gray_img, truth_mask)
-    dis_var = np.var(deep_img[truth_mask == 1])
-    ret = dict({
-        "mask": {
-            "accuracy": acc,
-            "precision": precision,
-            "recall": recall,
-            "F1-Score": f1,
-            "PSNR": cls_psnr
-        },
-        "image":{
-            "PSNR": img_psnr,
-            "CNR": img_cnr
-        },
-        "deep":{
-            "variance": dis_var
-        }
-    })
-    return ret
-
-
-def merge_result(results):
-    acc, precision, recall, f1, cls_psnr = [], [], [], [], []
-    img_psnr, img_cnr = [], []
-    dis_var = []
-    for result in results:
-        acc.append(result["mask"]["accuracy"])
-        precision.append(result["mask"]["precision"])
-        recall.append(result["mask"]["recall"])
-        f1.append(result["mask"]["F1-Score"])
-        cls_psnr.append(result["mask"]["PSNR"])
-        img_psnr.append(result["image"]["PSNR"])
-        img_cnr.append(result["image"]["CNR"])
-        dis_var.append(result["deep"]["variance"])
-    ret = dict({
-        "mask": {
-            "accuracy": np.mean(acc),
-            "precision": np.mean(precision),
-            "recall": np.mean(recall),
-            "F1-Score": np.mean(f1),
-            "PSNR": np.mean(cls_psnr)
-        },
-        "image":{
-            "PSNR": np.mean(img_psnr),
-            "CNR": np.mean(img_cnr)
-        },
-        "deep":{
-            "variance": np.mean(dis_var)
-        }
-    })
-    return ret
-
-
-def log_result(result):
-    logger.info("[Mask] Accuracy:{:.3f}% Precision:{:.3f}% Recall:{:.3f}% F1-Score:{:.3f}% PSNR:{:.4f}".format(
-        result["mask"]["accuracy"] * 100, result["mask"]["precision"] * 100, 
-        result["mask"]["recall"] * 100, result["mask"]["F1-Score"] * 100, result["mask"]["PSNR"]
-    ))
-    logger.info("[Image] PSNR:{:.4f} CNR:{:.4f}".format(result["image"]["PSNR"], result["image"]["CNR"]))
-    logger.info("[Deep] Variance:{:.4f}".format(result["deep"]["variance"]))
-
-
-def to_excel(excel_result, result, bias):
-    excel_result[0, bias*7] = result["mask"]["accuracy"]
-    excel_result[0, bias*7 + 1] = result["mask"]["precision"]
-    excel_result[0, bias*7 + 2] = result["mask"]["recall"]
-    excel_result[0, bias*7 + 3] = result["mask"]["F1-Score"]
-    excel_result[0, bias*7 + 4] = result["image"]["PSNR"]
-    excel_result[0, bias*7 + 5] = result["image"]["CNR"]
-    excel_result[0, bias*7 + 6] = result["deep"]["variance"]
-    return excel_result
     
 
 def main(args):
@@ -236,23 +166,48 @@ def main(args):
         excel_results = to_excel(excel_results, result, i + 1)
         results.append(result)
         
-        fig = plt.figure(figsize=(12, 6))
+        fig = plt.figure(figsize=(18, 8))
         x = np.arange(0, deep_img.shape[1], 1)
-        y = np.arange(0, deep_img.shape[0], 1)
-        x, y = np.meshgrid(x, y)
+        z = np.arange(0, deep_img.shape[0], 1)
+        x, z = np.meshgrid(x, z)
         x = x[mask == 1]
-        y = y[mask == 1]
+        z = z[mask == 1]
         deep_img = deep_img[mask == 1]
         
-        ax1 = fig.add_subplot(121)
+        ax1 = fig.add_subplot(2, 4, (1, 5))
         ax1.imshow(gray_img)
-        ax2 = fig.add_subplot(122, projection='3d')
-        ax2.scatter(x, deep_img, y, c=deep_img, cmap='viridis', s=0.1)
-        ax2.set_zlim([800, 1700])
-        ax2.yaxis._set_scale("log")
-        ax2.set_ylim([1, 6])
+        
+        ax2 = fig.add_subplot(2, 4, (2, 6))
+        ax2.imshow(mask * 255, cmap='gray')
+        
+        ax3 = fig.add_subplot(2, 4, 3, projection='3d')
+        ax3.scatter(x, deep_img, z, c=deep_img, cmap='viridis', s=0.1)
+        ax3.set_zlim([800, 1700])
+        ax3.yaxis._set_scale("log")
+        ax3.set_ylim([1, 6])
+        
+        ax4 = fig.add_subplot(2, 4, 4)
+        ax4.scatter(deep_img, z, c=deep_img, cmap='viridis', s=0.1)
+        ax4.set_xscale("log")
+        ax4.set_xlim([1, 6])
+        ax4.set_ylim([800, 1700])
+        
+        ax5 = fig.add_subplot(2, 4, 7)
+        ax5.scatter(x, deep_img, c=deep_img, cmap='viridis', s=0.1)
+        ax5.set_yscale("log")
+        ax5.set_ylim([1, 6])
+        
+        ax6 = fig.add_subplot(2, 4, 8)
+        ax6.scatter(x, z, c=deep_img, cmap='viridis', s=0.1)
+        ax6.set_ylim([800, 1700])
+        
+        plt.subplots_adjust(wspace=0.3)
 
         if args.save:
+            os.makedirs(os.path.join(file_name, "npy"), exist_ok=True)
+            np.save(os.path.join(file_name, "npy", "band_pass_gray_{}.png".format(sub_datasets[index])), gray_img)
+            np.save(os.path.join(file_name, "npy", "band_pass_mask_{}.png".format(sub_datasets[index])), mask)
+            np.save(os.path.join(file_name, "npy", "band_pass_deep_{}.png".format(sub_datasets[index])), deep_img)
             plt.savefig(os.path.join(file_name, "band_pass_{}.png".format(sub_datasets[index])))
         else:
             plt.show()

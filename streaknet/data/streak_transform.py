@@ -9,7 +9,7 @@ import numpy as np
 
 class StreakTransform(object):
     def __init__(self, batch=False):
-        self.dim = 1 if batch else 0
+        self.dim = 2 if batch else 0
         pass
     
     def __call__(self, signal, template=None, ground_truth=None, info=None): 
