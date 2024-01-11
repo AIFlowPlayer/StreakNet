@@ -147,11 +147,20 @@ def main(args):
             dataset, args.batch_size, filter, 
             device=device, num_workers=args.num_workers)
         
-        result = valid(
+        result_1 = valid(
             gray_img[row[0]:row[1], col[0]:col[1]], 
             deep_img[row[0]:row[1], col[0]:col[1]], 
             mask[row[0]:row[1], col[0]:col[1]], 
             truth_img[row[0]:row[1], col[0]:col[1]])
+        result_2 = valid(
+            gray_img[row[0]:row[1], col[0]:col[1]], 
+            deep_img[row[0]:row[1], col[0]:col[1]], 
+            1 - mask[row[0]:row[1], col[0]:col[1]], 
+            truth_img[row[0]:row[1], col[0]:col[1]])
+        if result_1["mask"]["F1-Score"] > result_2["mask"]["F1-Score"]:
+            result = result_1 
+        else:
+            result = result_2
         log_result(result)
         excel_results = to_excel(excel_results, result, i + 1)
         results.append(result)
