@@ -18,7 +18,7 @@ from torch.utils.data import DataLoader
 
 from streaknet.exp import get_exp
 from streaknet.data import StreakImageDataset
-from streaknet.utils import standard, setup_logger, hilbert
+from streaknet.utils import standard, setup_logger, hilbert, get_embedding_filter
 from streaknet.utils import valid, merge_result, log_result, to_excel
 
 
@@ -34,15 +34,6 @@ def make_parse():
     parser.add_argument("--cache", action="store_true", default=False)
     parser.add_argument("--num_workers", type=int, default=4)
     return parser
-
-
-def process_weight(weight):
-    weight = torch.abs(weight)
-    weight_sum = torch.mean(weight, dim=0)
-    weight_sum_real = weight_sum[:weight_sum.shape[0]//2]
-    weight_sum_imag = weight_sum[weight_sum.shape[0]//2:]
-    filter = torch.complex(weight_sum_real, weight_sum_imag)
-    return filter
 
 
 def get_filter(args, max_len=4000):
@@ -73,9 +64,8 @@ def get_filter(args, max_len=4000):
         model.load_state_dict(ckpt["model"])
         logger.info("loaded checkpoint done.")
         
-        signal_radar_weight = model.embedding.signal_embedding_block.dense.state_dict()['weight']
-        signal_radar_filter = process_weight(signal_radar_weight)
-        signal_radar_filter = standard(torch.absolute(signal_radar_filter))
+        signal_radar_filter = get_embedding_filter(model)
+    
         return signal_radar_filter, file_name
 
 
