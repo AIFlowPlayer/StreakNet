@@ -3,10 +3,28 @@
 # Author: Hongjun An (Coder.AN)
 # Email: an.hongjun@foxmail.com
 
+import torch
 import numpy as np
 from loguru import logger
 
+from streaknet.utils import standard
 from streaknet.data import cal_valid_results, cal_image_valid_results
+
+
+def process_weight(weight):
+    weight = torch.abs(weight)
+    weight_sum = torch.mean(weight, dim=0)
+    weight_sum_real = weight_sum[:weight_sum.shape[0]//2]
+    weight_sum_imag = weight_sum[weight_sum.shape[0]//2:]
+    filter = torch.complex(weight_sum_real, weight_sum_imag)
+    return filter
+
+
+def get_embedding_filter(model):
+    weight = model.embedding.signal_embedding_block.dense.state_dict()['weight']
+    filter = process_weight(weight)
+    filter = standard(torch.absolute(filter))
+    return filter
 
 
 def valid(gray_img, deep_img, mask, truth_mask):
