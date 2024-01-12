@@ -70,7 +70,7 @@ def reconstruction_algorithm(dataset, batch_size, filter, model, device=torch.de
     template_freq = torch.fft.rfft(template, 65536, dim=2).repeat(batch_size, 1, 1)
     template_freq_std = torch.fft.rfft(template_std, 65536, dim=2)[:, :, :4000].repeat(batch_size * 2048, 1, 1)
 
-    for i in tqdm(range(dataset.nums)):
+    for i in tqdm(range(dataset.nums // args.batch_size)):
         img, _, _, idx = data_fetcher.next()
         bsize = img.shape[0]
         
