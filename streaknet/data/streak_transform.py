@@ -32,4 +32,24 @@ class StreakTransform(object):
             return signal, template
         else:
             return signal
+
+
+class RandomNoise(object):
+    def __init__(self, amp):
+        assert amp >= 0
+        self.amp=amp
+    
+    def __call__(self, signal, template=None, ground_truth=None, info=None):
+        if self.amp > 0:
+            noise = torch.randn_like(signal)
+            max_amp, _ = torch.max(signal, dim=-1, keepdim=True)
+            min_amp, _ = torch.min(signal, dim=-1, keepdim=True)
+            amp = (max_amp - min_amp) * self.amp 
+            noise_signal = signal + noise * amp 
         
+        if ground_truth is not None:
+            return noise_signal, template, ground_truth, info 
+        elif template is not None:
+            return noise_signal, template 
+        else:
+            return noise_signal

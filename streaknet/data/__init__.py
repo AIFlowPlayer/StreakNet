@@ -4,6 +4,6 @@
 # Email: an.hongjun@foxmail.com
 
 from .streak_data import StreakSignalDataset, StreakImageDataset
-from .streak_transform import StreakTransform 
+from .streak_transform import StreakTransform, RandomNoise
 from .streak_evaluator import *
 from .data_prefetcher import DataPrefetcher

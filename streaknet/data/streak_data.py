@@ -137,7 +137,7 @@ class StreakImageDataset(Dataset):
         max_len=1024
     ):
         if transform is not None:
-            self.transform = transform()
+            self.transform = transform
         else:
             self.transform = None
         

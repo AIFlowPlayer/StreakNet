@@ -17,7 +17,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from streaknet.exp import get_exp
-from streaknet.data import StreakImageDataset
+from streaknet.data import StreakImageDataset, RandomNoise
 from streaknet.utils import standard, setup_logger, hilbert
 from streaknet.utils import valid, merge_result, log_result, to_excel
 
@@ -28,6 +28,7 @@ def make_parse():
     parser.add_argument("-b", "--batch-size", type=int, default=2)
     parser.add_argument("-f", "--exp_file", default=None, type=str, required=True, help="please input your experiment description file")
     parser.add_argument("-d", "--device", type=str, default='cpu', help="Select device.")
+    parser.add_argument("--noise", default=0, type=float)
     parser.add_argument("--save", default=False, action="store_true")
     parser.add_argument("--cache", action="store_true", default=False)
     parser.add_argument("--num_workers", type=int, default=4)
@@ -169,13 +170,14 @@ def main(args):
     
     results = []
     excel_results = np.zeros((1, 7*(len(sub_datasets)+1)), dtype=np.float32)
+    transform = RandomNoise(args.noise)
     
     for i, config_i in enumerate(config):
         index = config_i["sub_idx"]
         row = config_i["row_slice"]
         col = config_i["col_slice"]
         logger.info("Processing {}...".format(sub_datasets[index]))
-        dataset = StreakImageDataset(os.path.join("datasets", sub_datasets[index]), cache=args.cache, groundtruth=True)
+        dataset = StreakImageDataset(os.path.join("datasets", sub_datasets[index]), cache=args.cache, groundtruth=True, transform=transform)
 
         gray_img, deep_img, mask, truth_img = reconstruction_algorithm(
             dataset, args.batch_size, filter, model,
@@ -229,10 +231,16 @@ def main(args):
 
         if args.save:
             os.makedirs(os.path.join(file_name, "npy"), exist_ok=True)
-            np.save(os.path.join(file_name, "npy", "reconstruction_gray_{}.png".format(sub_datasets[index])), gray_img)
-            np.save(os.path.join(file_name, "npy", "reconstruction_mask_{}.png".format(sub_datasets[index])), mask)
-            np.save(os.path.join(file_name, "npy", "reconstruction_deep_{}.png".format(sub_datasets[index])), deep_img)
-            plt.savefig(os.path.join(file_name, "reconstruction_{}.png".format(sub_datasets[index])))
+            if args.noise > 0:
+                np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_gray_{}.png".format(args.noise, sub_datasets[index])), gray_img)
+                np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_mask_{}.png".format(args.noise, sub_datasets[index])), mask)
+                np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_deep_{}.png".format(args.noise, sub_datasets[index])), deep_img)
+                plt.savefig(os.path.join(file_name, "noise_{:.2f}_reconstruction_{}.png".format(args.noise, sub_datasets[index])))
+            else:
+                np.save(os.path.join(file_name, "npy", "reconstruction_gray_{}.png".format(sub_datasets[index])), gray_img)
+                np.save(os.path.join(file_name, "npy", "reconstruction_mask_{}.png".format(sub_datasets[index])), mask)
+                np.save(os.path.join(file_name, "npy", "reconstruction_deep_{}.png".format(sub_datasets[index])), deep_img)
+                plt.savefig(os.path.join(file_name, "reconstruction_{}.png".format(sub_datasets[index])))
         else:
             plt.show()
     
@@ -243,7 +251,10 @@ def main(args):
     
     if args.save:
         df = pd.DataFrame(excel_results)
-        df.to_excel(os.path.join(file_name, "reconstruction_log.xlsx"), index=False, engine='openpyxl')
+        if args.noise > 0:
+            df.to_excel(os.path.join(file_name, "noise_{:.2f}_reconstruction_log.xlsx".format(args.noise)), index=False, engine='openpyxl')
+        else:
+            df.to_excel(os.path.join(file_name, "reconstruction_log.xlsx"), index=False, engine='openpyxl')
     
 
 if __name__ == "__main__":
