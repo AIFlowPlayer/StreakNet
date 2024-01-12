@@ -121,6 +121,10 @@ def visualize_model(model_i, model_nums, model_name, model_path, model, test_loa
             cv2.imwrite(os.path.join(save_dirs[i], "{}.png".format(model_name)), vis_results[i])
             np.save(os.path.join(save_dirs[i], "{}.npy".format(model_name)), 
                     np.array([acc, precision, recall, f1, psnr], dtype=np.float32))
+        else:
+            from matplotlib import pyplot as plt 
+            plt.imshow(vis_results[i])
+            plt.show()
 
 
 def main(exp, args):
