@@ -46,6 +46,8 @@ class RandomNoise(object):
             min_amp, _ = torch.min(signal, dim=-1, keepdim=True)
             amp = (max_amp - min_amp) * self.amp 
             noise_signal = signal + noise * amp 
+        else:
+            noise_signal = signal
         
         if ground_truth is not None:
             return noise_signal, template, ground_truth, info 
