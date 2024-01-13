@@ -189,14 +189,14 @@ def main(args):
         
         ax4 = fig.add_subplot(2, 4, 4)
         ax4.scatter(deep_img, z, c=deep_img, cmap='viridis', s=0.1)
-        ax4.set_xscale("log")
-        ax4.set_xlim([1, 6])
+        # ax4.set_xscale("log")
+        # ax4.set_xlim([1, 6])
         ax4.set_ylim([800, 1700])
         
         ax5 = fig.add_subplot(2, 4, 7)
         ax5.scatter(x, deep_img, c=deep_img, cmap='viridis', s=0.1)
-        ax5.set_yscale("log")
-        ax5.set_ylim([1, 6])
+        # ax5.set_yscale("log")
+        # ax5.set_ylim([1, 6])
         
         ax6 = fig.add_subplot(2, 4, 8)
         ax6.scatter(x, z, c=deep_img, cmap='viridis', s=0.1)
