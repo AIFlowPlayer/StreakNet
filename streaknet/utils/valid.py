@@ -29,11 +29,11 @@ def get_embedding_filter(model):
 
 def valid(gray_img, deep_img, mask, truth_mask):
     acc, precision, recall, f1, cls_psnr = cal_valid_results(mask, truth_mask)
-    img_psnr, img_cnr = cal_image_valid_results(gray_img, truth_mask)
+    img_psnr, img_snr, img_cnr = cal_image_valid_results(gray_img, truth_mask)
     dis_var = np.var(deep_img[mask == 1])
     ret = dict({
         "mask": {"accuracy": acc, "precision": precision, "recall": recall, "F1-Score": f1, "PSNR": cls_psnr},
-        "image":{"PSNR": img_psnr, "CNR": img_cnr},
+        "image":{"PSNR": img_psnr, "SNR": img_snr, "CNR": img_cnr},
         "deep":{"variance": dis_var}
     })
     return ret
@@ -41,7 +41,7 @@ def valid(gray_img, deep_img, mask, truth_mask):
 
 def merge_result(results):
     acc, precision, recall, f1, cls_psnr = [], [], [], [], []
-    img_psnr, img_cnr = [], []
+    img_psnr, img_snr, img_cnr = [], [], []
     dis_var = []
     for result in results:
         acc.append(result["mask"]["accuracy"])
@@ -50,11 +50,12 @@ def merge_result(results):
         f1.append(result["mask"]["F1-Score"])
         cls_psnr.append(result["mask"]["PSNR"])
         img_psnr.append(result["image"]["PSNR"])
+        img_snr.append(result["image"]["SNR"])
         img_cnr.append(result["image"]["CNR"])
         dis_var.append(result["deep"]["variance"])
     ret = dict({
         "mask": {"accuracy": np.mean(acc), "precision": np.mean(precision), "recall": np.mean(recall), "F1-Score": np.mean(f1), "PSNR": np.mean(cls_psnr)},
-        "image":{"PSNR": np.mean(img_psnr), "CNR": np.mean(img_cnr)},
+        "image":{"PSNR": np.mean(img_psnr), "SNR":np.mean(img_snr), "CNR": np.mean(img_cnr)},
         "deep":{"variance": np.mean(dis_var)}
     })
     return ret
@@ -65,16 +66,17 @@ def log_result(result):
         result["mask"]["accuracy"] * 100, result["mask"]["precision"] * 100, 
         result["mask"]["recall"] * 100, result["mask"]["F1-Score"] * 100, result["mask"]["PSNR"]
     ))
-    logger.info("[Image] PSNR:{:.4f} CNR:{:.4f}".format(result["image"]["PSNR"], result["image"]["CNR"]))
+    logger.info("[Image] PSNR:{:.4f} SNR:{:.4f} CNR:{:.4f}".format(result["image"]["PSNR"], result["image"]["SNR"], result["image"]["CNR"]))
     logger.info("[Deep] Variance:{:.4f}".format(result["deep"]["variance"]))
 
 
 def to_excel(excel_result, result, bias):
-    excel_result[0, bias*7] = result["mask"]["accuracy"]
-    excel_result[0, bias*7 + 1] = result["mask"]["precision"]
-    excel_result[0, bias*7 + 2] = result["mask"]["recall"]
-    excel_result[0, bias*7 + 3] = result["mask"]["F1-Score"]
-    excel_result[0, bias*7 + 4] = result["image"]["PSNR"]
-    excel_result[0, bias*7 + 5] = result["image"]["CNR"]
-    excel_result[0, bias*7 + 6] = result["deep"]["variance"]
+    excel_result[0, bias*8] = result["mask"]["accuracy"]
+    excel_result[0, bias*8 + 1] = result["mask"]["precision"]
+    excel_result[0, bias*8 + 2] = result["mask"]["recall"]
+    excel_result[0, bias*8 + 3] = result["mask"]["F1-Score"]
+    excel_result[0, bias*8 + 4] = result["image"]["PSNR"]
+    excel_result[0, bias*8 + 5] = result["image"]["SNR"]
+    excel_result[0, bias*8 + 5] = result["image"]["CNR"]
+    excel_result[0, bias*8 + 6] = result["deep"]["variance"]
     return excel_result

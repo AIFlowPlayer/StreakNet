@@ -4,7 +4,7 @@ import numpy as np
 from tqdm import tqdm
 from loguru import logger
 
-noise_rate = ['0.10', '0.50', '0.01']
+noise_rate = ['0.01', '0.05', '0.10', '0.50']
 network_version = ['', 'v2']
 network_type = ['s', 'm', 'l', 'x']
 exp_id = ['1', '2', '3', '4', '5']

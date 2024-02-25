@@ -45,7 +45,9 @@ def cal_image_valid_results(preds, labels, eps=1e-6):
     sig_noise = np.var(preds[labels < 127])
     cnr = np.abs(u_roi - u_noise) / (np.sqrt(sig_roi + sig_noise) + eps)
     
-    return psnr, cnr
+    snr = 10 * np.log10(u_roi / u_noise)
+    
+    return psnr, snr, cnr
 
 
 def cal_valid_results(preds, labels, eps=1e-6, origin=False):
