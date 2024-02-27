@@ -169,7 +169,7 @@ def main(args):
     config = data["config"]
     
     results = []
-    excel_results = np.zeros((1, 7*(len(sub_datasets)+1)), dtype=np.float32)
+    excel_results = np.zeros((1, 8*(len(sub_datasets)+1)), dtype=np.float32)
     transform = RandomNoise(args.noise)
     
     for i, config_i in enumerate(config):

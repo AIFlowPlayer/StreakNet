@@ -77,6 +77,6 @@ def to_excel(excel_result, result, bias):
     excel_result[0, bias*8 + 3] = result["mask"]["F1-Score"]
     excel_result[0, bias*8 + 4] = result["image"]["PSNR"]
     excel_result[0, bias*8 + 5] = result["image"]["SNR"]
-    excel_result[0, bias*8 + 5] = result["image"]["CNR"]
-    excel_result[0, bias*8 + 6] = result["deep"]["variance"]
+    excel_result[0, bias*8 + 6] = result["image"]["CNR"]
+    excel_result[0, bias*8 + 7] = result["deep"]["variance"]
     return excel_result
