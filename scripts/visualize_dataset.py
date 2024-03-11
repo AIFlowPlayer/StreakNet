@@ -52,13 +52,18 @@ def main(args):
             w = col[1] - col[0]
             h = row[1] - row[0]
             area[idx] += w * h
-            sub_datasets[idx][row[0]:row[1], col[0]:col[1]] = 0.5 * sub_datasets[idx][row[0]:row[1], col[0]:col[1]] + 0.5 * np.array([[[255, 0, 0]]])
+            sub_datasets[idx][row[0]:row[1], col[0]:col[1]] = 0.5 * sub_datasets[idx][row[0]:row[1], col[0]:col[1]] + 0.5 * np.array([[[0, 0, 255]]])
         for i, name_i in enumerate(config["sub_datasets"]):
             plt.subplot(max_len, 3, 3 * i + j + 1)
             plt.title("{}-{}".format(name_i, name))
             im = cv2.UMat(sub_datasets[i].transpose(1, 0, 2))
+            im = cv2.UMat.get(im)
+            h, w, _ = im.shape
+            h = int(h * 1.5)
+            im = cv2.resize(im, (w, h))
             im = cv2.putText(im, "area:{}".format(area[i]), (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, color=(255, 255, 255), thickness=3)
-            plt.imshow(cv2.UMat.get(im), cmap="gray")
+            cv2.imwrite(os.path.join("StreakNet_outputs", "imaging", "{}-{}.png".format(name_i, name)), im)
+            plt.imshow(im, cmap="gray")
     plt.show()
 
 

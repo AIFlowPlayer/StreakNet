@@ -198,6 +198,8 @@ def main(args):
         x, z = np.meshgrid(x, z)
         x = x[mask == 1]
         z = z[mask == 1]
+        deep_img_src = deep_img.copy()
+        deep_img_src[mask == 0] = 0
         deep_img = deep_img[mask == 1]
         
         ax1 = fig.add_subplot(2, 4, (1, 5))
@@ -234,12 +236,12 @@ def main(args):
             if args.noise > 0:
                 np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_gray_{}.png".format(args.noise, sub_datasets[index])), gray_img)
                 np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_mask_{}.png".format(args.noise, sub_datasets[index])), mask)
-                np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_deep_{}.png".format(args.noise, sub_datasets[index])), deep_img)
+                np.save(os.path.join(file_name, "npy", "noise_{:.2f}_reconstruction_deep_{}.png".format(args.noise, sub_datasets[index])), deep_img_src)
                 plt.savefig(os.path.join(file_name, "noise_{:.2f}_reconstruction_{}.png".format(args.noise, sub_datasets[index])))
             else:
                 np.save(os.path.join(file_name, "npy", "reconstruction_gray_{}.png".format(sub_datasets[index])), gray_img)
                 np.save(os.path.join(file_name, "npy", "reconstruction_mask_{}.png".format(sub_datasets[index])), mask)
-                np.save(os.path.join(file_name, "npy", "reconstruction_deep_{}.png".format(sub_datasets[index])), deep_img)
+                np.save(os.path.join(file_name, "npy", "reconstruction_deep_{}.png".format(sub_datasets[index])), deep_img_src)
                 plt.savefig(os.path.join(file_name, "reconstruction_{}.png".format(sub_datasets[index])))
         else:
             plt.show()
