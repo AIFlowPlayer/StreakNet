@@ -19,15 +19,15 @@ class Expv2(Expv1):
         super().__init__()
     
     def get_model(self, export=False):
-        from streaknet.models import FrequencyDomainFilteringEmbedding
-        from streaknet.models import DoubleBranchCrossAttention
-        from streaknet.models import ImagingHead, StreakNet
+        from streaknet.models import FDEmbedding
+        from streaknet.models import DBCAttention
+        from streaknet.models import ImagingHead, StreakNetArch
 
         if getattr(self, "model", None) is None:
-            embedding = FrequencyDomainFilteringEmbedding(self.width, self.act, export=export)
-            backbone = DoubleBranchCrossAttention(self.width, self.depth, self.dropout, self.act)
+            embedding = FDEmbedding(self.width, self.act, export=export)
+            backbone = DBCAttention(self.width, self.depth, self.dropout, self.act)
             head = ImagingHead(self.width, self.act, self.loss)
-            self.model = StreakNet(embedding, backbone, head)
+            self.model = StreakNetArch(embedding, backbone, head)
 
         self.model.train()
         return self.model

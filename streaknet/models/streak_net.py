@@ -6,18 +6,18 @@
 import torch
 from torch import nn 
 
-from .streak_embedding import FrequencyDomainFilteringEmbedding
-from .streak_backbone import StreakTransformerEncoder, DoubleBranchCrossAttention
+from .streak_embedding import FDEmbedding
+from .streak_backbone import SelfAttention, DBCAttention
 from .streak_head import ImagingHead
 
 
-class StreakNet(nn.Module):
+class StreakNetArch(nn.Module):
     def __init__(self, embedding=None, backbone=None, head=None):
-        super(StreakNet, self).__init__()
+        super(StreakNetArch, self).__init__()
         if embedding is None:
-            embedding = FrequencyDomainFilteringEmbedding()
+            embedding = FDEmbedding()
         if backbone is None:
-            backbone = StreakTransformerEncoder()
+            backbone = SelfAttention()
         if head is None:
             backbone = ImagingHead()
         

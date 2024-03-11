@@ -83,15 +83,15 @@ class Exp(BaseExp):
         self.exp_name = os.path.split(os.path.realpath(__file__))[1].split(".")[0]
     
     def get_model(self, export=False):
-        from streaknet.models import FrequencyDomainFilteringEmbedding
-        from streaknet.models import StreakTransformerEncoder
-        from streaknet.models import ImagingHead, StreakNet
+        from streaknet.models import FDEmbedding
+        from streaknet.models import SelfAttention
+        from streaknet.models import ImagingHead, StreakNetArch
 
         if getattr(self, "model", None) is None:
-            embedding = FrequencyDomainFilteringEmbedding(self.width, self.act, export=export)
-            backbone = StreakTransformerEncoder(self.width, self.depth, self.dropout, self.act)
+            embedding = FDEmbedding(self.width, self.act, export=export)
+            backbone = SelfAttention(self.width, self.depth, self.dropout, self.act)
             head = ImagingHead(self.width, self.act, self.loss)
-            self.model = StreakNet(embedding, backbone, head)
+            self.model = StreakNetArch(embedding, backbone, head)
 
         self.model.train()
         return self.model

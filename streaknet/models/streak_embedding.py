@@ -9,9 +9,9 @@ from torch import nn
 from .network_blocks import get_activation
 
 
-class FrequencyDomainFilteringBlock(nn.Module):
+class FDEmbeddingBlock(nn.Module):
     def __init__(self, width=1.0, act='silu', export=False):
-        super(FrequencyDomainFilteringBlock, self).__init__()
+        super(FDEmbeddingBlock, self).__init__()
         self.export = export
         self.embedding_size = round(512 * width)
         self.flatten = nn.Flatten(1)
@@ -41,11 +41,11 @@ class FrequencyDomainFilteringBlock(nn.Module):
         return pred
 
 
-class FrequencyDomainFilteringEmbedding(nn.Module):
+class FDEmbedding(nn.Module):
     def __init__(self, width=1.0, act='silu', export=False):
-        super(FrequencyDomainFilteringEmbedding, self).__init__()
-        self.signal_embedding_block = FrequencyDomainFilteringBlock(width, act, export)
-        self.template_embedding_block = FrequencyDomainFilteringBlock(width,act, export)
+        super(FDEmbedding, self).__init__()
+        self.signal_embedding_block = FDEmbeddingBlock(width, act, export)
+        self.template_embedding_block = FDEmbeddingBlock(width,act, export)
     
     def forward(self, signal, template):
         signal_embedding = self.signal_embedding_block(signal)
