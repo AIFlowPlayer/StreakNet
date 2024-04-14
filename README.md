@@ -1,7 +1,3 @@
-[English](./README.md) | [中文](./README_CN.md) | [Gitee码云](#)
-
-<hr>
-
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
 <div align="center"><img src="./assets/overview.jpg"></div>
