@@ -157,6 +157,8 @@ class StreakImageDataset(Dataset):
         self.cache = cache
         self.data_dir = os.path.join(data_dir, "data") 
         self.img_list = os.listdir(self.data_dir)
+        if ".gitattributes" in self.img_list:
+            self.img_list.remove(".gitattributes")
         self.img_list.sort()
         self.nums = len(self.img_list)
         

@@ -32,7 +32,7 @@ def make_parser():
     )
     parser.add_argument("-b", "--batch-size", type=int, default=64, help="batch size")
     parser.add_argument(
-        "-d", "--devices", default=None, type=int, help="device for training"
+        "-d", "--devices", default=1, type=int, help="device for training"
     )
     parser.add_argument(
         "-f",
@@ -113,7 +113,9 @@ def main(exp: Exp, args):
 if __name__ == "__main__":
     configure_module()
     args = make_parser().parse_args()
-    assert args.devices <= 1, "There are unfixed bugs in multi card training!"
+    assert args.devices == 1
+    assert args.num_machines == 1
+    assert args.machine_rank == 0
     exp = get_exp(args.exp_file)
     exp.merge(args.opts)
     check_exp_value(exp)

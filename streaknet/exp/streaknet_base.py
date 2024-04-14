@@ -71,8 +71,8 @@ class Exp(BaseExp):
         # if set to 1, user could see log every iteration.
         self.print_interval = 100
         # visualize period in iter of warmup epochs
-        self.viz_interval = 50
-        self.max_viz_iter = 1000
+        self.viz_interval = 1
+        self.max_viz_iter = -1
         # eval period in epoch, for example,
         # if set to 1, model will be evaluate after every epoch.
         self.eval_interval = 2

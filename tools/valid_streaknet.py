@@ -27,6 +27,7 @@ def make_parse():
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-b", "--batch-size", type=int, default=2)
     parser.add_argument("-f", "--exp_file", default=None, type=str, required=True, help="please input your experiment description file")
+    parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for demo")
     parser.add_argument("-d", "--device", type=str, default='cpu', help="Select device.")
     parser.add_argument("--noise", default=0, type=float)
     parser.add_argument("--save", default=False, action="store_true")
@@ -147,10 +148,14 @@ def main(args):
     logger.info("Model Structure:\n{}".format(str(model)))
     
     file_name = os.path.join(exp.output_dir, args.experiment_name)
-    ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-    logger.info("loading checkpoint from {}".format(ckpt_file))
+    if args.ckpt is None:
+        ckpt_file = os.path.join(file_name, "best_ckpt.pth")
+    else:
+        ckpt_file = args.ckpt
+    logger.info("loading checkpoint")
     loc = args.device
     ckpt = torch.load(ckpt_file, map_location=loc)
+    # load the model state dict
     model.load_state_dict(ckpt["model"])
     logger.info("loaded checkpoint done.")
     
@@ -216,14 +221,10 @@ def main(args):
         
         ax4 = fig.add_subplot(2, 4, 4)
         ax4.scatter(deep_img, z, c=deep_img, cmap='viridis', s=0.1)
-        # ax4.set_xscale("log")
-        # ax4.set_xlim([1, 6])
         ax4.set_ylim([800, 1700])
         
         ax5 = fig.add_subplot(2, 4, 7)
         ax5.scatter(x, deep_img, c=deep_img, cmap='viridis', s=0.1)
-        # ax5.set_yscale("log")
-        # ax5.set_ylim([1, 6])
         
         ax6 = fig.add_subplot(2, 4, 8)
         ax6.scatter(x, z, c=deep_img, cmap='viridis', s=0.1)

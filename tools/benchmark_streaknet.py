@@ -5,22 +5,16 @@
 
 import os
 import time
-import cv2
-import yaml
 import pandas as pd
 import argparse
 from loguru import logger
 import numpy as np
 from tqdm import tqdm
-import matplotlib.pyplot as plt
 
 import torch 
-from torch.utils.data import DataLoader
 
 from streaknet.exp import get_exp
-from streaknet.data import StreakImageDataset, RandomNoise
-from streaknet.utils import standard, setup_logger, hilbert
-from streaknet.utils import valid, merge_result, log_result, to_excel
+from streaknet.utils import standard, hilbert
 
 
 def make_parse():
@@ -131,12 +125,6 @@ def main(args):
     logger.info("Model Structure:\n{}".format(str(model)))
     
     file_name = os.path.join(exp.output_dir, args.experiment_name)
-    ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-    logger.info("loading checkpoint from {}".format(ckpt_file))
-    loc = args.device
-    ckpt = torch.load(ckpt_file, map_location=loc)
-    model.load_state_dict(ckpt["model"])
-    logger.info("loaded checkpoint done.")
     
     filter = get_filter(model).to(device)
     model = model.to(device).eval()

@@ -27,7 +27,7 @@ def make_parse():
     parser = argparse.ArgumentParser("StreakNet Demo!")
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-b", "--batch-size", type=int, default=2)
-    parser.add_argument("-f", "--exp_file", default=None, type=str, required=True, help="please input your experiment description file")
+    parser.add_argument("-f", "--exp-file", default=None, type=str, required=True, help="please input your experiment description file")
     parser.add_argument("-d", "--device", type=str, default='cpu', help="Select device.")
     parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for demo")
     parser.add_argument("-p", "--path", type=str, required=True)
@@ -35,11 +35,12 @@ def make_parse():
     parser.add_argument("--noise", default=0, type=float)
     parser.add_argument("--save", default=False, action="store_true")
     parser.add_argument("--cache", action="store_true", default=False)
+    parser.add_argument("--real-time", action="store_true", default=False)
     parser.add_argument("--num_workers", type=int, default=4)
     return parser
 
 
-def demo(dataset, batch_size, filter, model, device=torch.device('cpu'), num_workers=4):
+def demo(dataset, batch_size, filter, model, device=torch.device('cpu'), num_workers=4, realtime=False):
     from streaknet.data import StreakTransform
     from streaknet.data import DataPrefetcher
     transform = StreakTransform(True)
@@ -55,6 +56,9 @@ def demo(dataset, batch_size, filter, model, device=torch.device('cpu'), num_wor
     
     template_freq = torch.fft.rfft(template, 65536, dim=2).repeat(batch_size, 1, 1)
     template_freq_std = torch.fft.rfft(template_std, 65536, dim=2)[:, :, :4000].repeat(batch_size * 2048, 1, 1)
+
+    if realtime:
+        plt.ion()
 
     for i, (img, _, idx) in enumerate(tqdm(data_loader)):
         bsize = img.shape[0]
@@ -101,14 +105,25 @@ def demo(dataset, batch_size, filter, model, device=torch.device('cpu'), num_wor
         # 计算景深
         distance = (max_resp_index * 30 * 1e-9 / 2 /2048) * 3e8 
         deep_img[:, idx[:, 0]] = distance.T
+
+        if realtime:
+            realtime_gray = (gray_img * mask_img).cpu().numpy()
+            plt.clf()
+            plt.imshow(realtime_gray)
+            plt.show()
+            plt.pause(0.01)
+
+    if realtime:
+        plt.ioff()
     
+    # 后处理
     # 转换为灰度值
     gray_img = standard(gray_img) * 255
     gray_img[gray_img > 255] = 255
     gray_img = gray_img.cpu().numpy().astype(np.uint8)
     deep_img = deep_img.cpu().numpy()
     
-    # 抑制背景噪声
+    # 进一步抑制背景噪声
     mask = mask_img.cpu().numpy() * 255
     kernel = np.ones((5, 5), np.float32) / 25
     mask = cv2.filter2D(mask, -1, kernel)
@@ -155,7 +170,7 @@ def main(exp, args):
     dataset = StreakImageDataset(args.path, args.template, transform=transform, cache=args.cache)
     gray_img, deep_img, mask = demo(
         dataset, args.batch_size, filter, model,
-        device=device, num_workers=args.num_workers)
+        device=device, num_workers=args.num_workers, realtime=args.real_time)
     
     fig = plt.figure(figsize=(18, 8))
     x = np.arange(0, deep_img.shape[1], 1)
@@ -179,14 +194,10 @@ def main(exp, args):
     
     ax4 = fig.add_subplot(2, 4, 4)
     ax4.scatter(deep_img, z, c=deep_img, cmap='viridis', s=0.1)
-    # ax4.set_xscale("log")
-    # ax4.set_xlim([1, 6])
     ax4.set_ylim([800, 1700])
     
     ax5 = fig.add_subplot(2, 4, 7)
     ax5.scatter(x, deep_img, c=deep_img, cmap='viridis', s=0.1)
-    # ax5.set_yscale("log")
-    # ax5.set_ylim([1, 6])
     
     ax6 = fig.add_subplot(2, 4, 8)
     ax6.scatter(x, z, c=deep_img, cmap='viridis', s=0.1)

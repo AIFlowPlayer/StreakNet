@@ -28,24 +28,56 @@ StreakNet Benchmark
 <details>
 <summary>Introduction</summary>
 
-**StreakData** is an underwater imaging dataset for **USCL** systems. It comprises a collection of streak images captured by a **USCL** system at distances of 10m, 13m, 15m, and 20m. See the table below to learn more details of the dataset.
+**StreakNet-Dataset** is an underwater laser imaging dataset for **UCLR** systems. It comprises a collection of streak-tube images captured by a **UCLR** system at distances of 10m, 13m, 15m, and 20m. See the table below to learn more details of the dataset.
 
-|Distance|Number of streak images|Resolution of streak images|Resolution of imaged image|Data type|Sample size|
-|:---:|:---:|:---:|:---:|:---:|:---:|
-|10m|400|2048x2048|2048x400|uint16|819200|
-|13m|349|2048x2048|2048x349|uint16|714752|
-|15m|300|2048x2048|2048x300|uint16|614400|
-|20m|267|2048x2048|2048x267|uint16|546816|
+|Distance|Number of streak-tube images|Resolution of streak-tube images|Data type|Training set|Validation set|Test set|
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+|10m|400|2048x2048|uint16|315,200|40,800|819,200|
+|13m|349|2048x2048|uint16|281,992|47,530|714,752|
+|15m|300|2048x2048|uint16|245,400|39,200|614,400|
+|20m|267|2048x2048|uint16|229,086|31,240|546,816|
 
-You can download **StreakData** for free at [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76).
+</details>
+
+<details>
+<summary id="datasetdownload">Download</summary>
+
+You can download **StreakNet-Dataset** for free from [HuggingFace](https://huggingface.co/datasets/Coder-AN/StreakNet-Dataset) or [ModelScope](https://modelscope.cn/datasets/CoderAN/StreakNet-Dataset/) by Git.
+
+Firstly, install `git-lfs`.
+
+```sh
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+sudo apt update
+sudo apt install git-lfs   
+sudo git lfs install  --system
+```
+
+Then, download **StreakNet-Dataset** in work directory of StreakNet.
+
+* From [HuggingFace](https://huggingface.co/datasets/Coder-AN/StreakNet-Dataset): For Global Users
+
+```sh
+cd StreakNet
+git clone https://huggingface.co/datasets/Coder-AN/StreakNet-Dataset ./datasets
+```
+
+* From [ModelScope](https://modelscope.cn/datasets/CoderAN/StreakNet-Dataset): For Chinese Users
+
+```sh
+cd StreakNet
+git clone https://www.modelscope.cn/datasets/CoderAN/StreakNet-Dataset.git ./datasets
+```
+
 </details>
 
 <details>
 <summary>Organizational Structure</summary>
 
-After downloading **StreakData** from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), please unzip the file and you will see the following directory structure.
+After downloading **StreakNet-Dataset** from [HuggingFace](https://huggingface.co/datasets/Coder-AN/StreakNet-Dataset) or [ModelScope](https://modelscope.cn/datasets/CoderAN/StreakNet-Dataset/), you will see the following directory structure.
+
 ```sh
-YOUR_UNZIP_DIRECTORY
+datasets
     |- clean_water_10m      # The directory of data taken at a distance of 10m
     |   |- data             # Original streak images
     |   |   |- 001.tif
@@ -73,7 +105,7 @@ YOUR_UNZIP_DIRECTORY
 
 * Step1. Setup your conda environment. ([What is Anaconda?](https://www.anaconda.com/download))
 ```sh
-conda create -n streaknet python=3.7
+conda create -n streaknet python=3.10
 conda activate streaknet
 ```
 
@@ -90,14 +122,7 @@ pip install -e .
 
 * Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
 
-* Step2. Create a directory named '*datasets*' under the root directory.
-
-```sh
-cd StreakNet
-mkdir datasets
-```
-
-* Step3. Download the [**StreakData**](#dataset) dataset from [GoogleDrive](https://drive.google.com/file/d/16RiV8JRL2GVe0GH1oXF4ZcrN2okQq6qG/view?usp=drive_link) or [BaiduDisk](https://pan.baidu.com/s/1QQ0nGwlq0KzwvY8yi2PCaw?pwd=zl76), unzip it to the '*datasets*' directory. Specifically, your project directory should appear as follows:
+* Step2. Download the [**StreakNet-Dataset**](#dataset) by following the ['*Download*'](#datasetdownload) section, then you will see the following directory structure.
 
 ```sh
 StreakNet
@@ -117,7 +142,7 @@ StreakNet
 </details>
 
 <details>
-<summary id="reproduceexperimentalresults">Reproduce Experimental Results</summary>
+<summary id="trainmodels">Train Models</summary>
 
 * Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
 
@@ -125,14 +150,20 @@ StreakNet
 
 * Step3. Run the following commands to train the respective models in the root directory.
 ```sh
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py --cache
-                                                    streaknet_m.py
-                                                    streaknet_l.py
-                                                    streaknet_x.py
+python tools/train_streaknet.py -b 512 -f exps/streaknet/streaknet_s.py --cache
+                                                         streaknet_m.py
+                                                         streaknet_l.py
+                                                         streaknet_x.py
+```
+
+```sh
+python tools/train_streaknet.py -b 512 -f exps/streaknetv2/streaknetv2_s.py --cache
+                                                           streaknetv2_m.py
+                                                           streaknetv2_l.py
+                                                           streaknetv2_x.py
 ```
 > Arguments: \
 > **-b**: set the batch-size when training. \
-> **-d**: set the number of GPU when training (Currently, only d=1 is supported). \
 > **-f**: specify the experiment profile. \
 > **--cache**: use RAM cache when training
 
@@ -143,10 +174,17 @@ python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py --cache
 (2) The program will utilize CUDA to accelerate the training process. Please ensure that your server is equipped with at least one NVIDIA GPU with a graphics memory capacity of more than **2GB**.
 
 ```sh
-python tools/train.py -b 512 -d 1 -f exps/streaknet/streaknet_s.py
-                                                    streaknet_m.py
-                                                    streaknet_l.py
-                                                    streaknet_x.py
+python tools/train.py -b 512 -f exps/streaknet/streaknet_s.py
+                                               streaknet_m.py
+                                               streaknet_l.py
+                                               streaknet_x.py
+```
+
+```sh
+python tools/train.py -b 512 -f exps/streaknetv2/streaknetv2_s.py
+                                                 streaknetv2_m.py
+                                                 streaknetv2_l.py
+                                                 streaknetv2_x.py
 ```
 
 * Step4. Real-time training status will be saved to *StreakNet_outputs* folder. Run *tensorboard* to visualize the status of the training process.
@@ -160,31 +198,79 @@ tensorboard --logdir=StreakNet_outputs
 <details>
 <summary>Demo</summary>
 
-* Step1. Download a pretrained model from the [benchmark](#benchmark) table. Alternatively, you can directly use the model you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
-
-* Step2. Run the following command to start demo:
+* Step1. Download a pretrained model from [HuggingFace](https://huggingface.co/Coder-AN/StreakNet-Models) or [ModelScope](https://modelscope.cn/models/CoderAN/StreakNet-Models/summary). Alternatively, you can directly use the model you just trained in the ['*Train Models*'](#trainmodels) section.
 
 ```sh
-python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/streaknet_s.py -b 512 -c <path/to/your/pretrained/model/streaknet_s_ckpt.pth>
-                                     clean_water_13m                        streaknet_m.py                                          streaknet_m_ckpt.pth
-                                     clean_water_15m                        streaknet_l.py                                          streaknet_l_ckpt.pth
-                                     clean_water_20m                        streaknet_x.py                                          streaknet_x_ckpt.pth
+# From HuggingFace: For Global Users
+cd StreakNet
+git clone https://huggingface.co/Coder-AN/StreakNet-Models ./checkpoints
+```
+
+```sh
+# From ModelScope: For Chinese Users
+cd StreakNet
+git clone https://www.modelscope.cn/CoderAN/StreakNet-Models.git ./checkpoints
+```
+
+* Step2. Run the following command to run StreakNet demo:
+
+```sh
+python tools/demo_streaknet.py -b 2 \
+  --path datasets/clean_water_13m \
+  -f exps/streaknet/streaknet_s.py \
+  -c checkpoints/streaknet_s_ckpt.pth \
+  --device "cuda:0" \
+  --cache --real-time
 ```
 
 > Arguments: \
-> **--path**: path to the streak images (.tif). \
+> **--path**: path to the dataset. \
 > **-f**: specify the experiment profile. \
 > **-b**: set the batch-size when inferring. \
-> **-c**: specify the model weights when inferring.
+> **-c**: specify the model weights when inferring. \
+> **--device**: specify the GPU when inferring. \
+> **--realtime**: enable real-time preview. \
+> **--save**: save imaging results.
 
-**Attention**: If you omit the `-c` option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+**Attention**: If you omit the `-c` option, the program will automatically use the '*best_ckpt.pth*' file located in the '*StreakNet_outputs*' directory, which you just trained in the ['*Train Models*'](#trainmodels) section.
 
 ```sh
-python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/streaknet_s.py -b 512
-                                     clean_water_13m                        streaknet_m.py
-                                     clean_water_15m                        streaknet_l.py
-                                     clean_water_20m                        streaknet_x.py
+python tools/demo_streaknet.py -b 2 \
+  --path datasets/clean_water_13m \
+  -f exps/streaknet/streaknet_s.py \
+  --device "cuda:0" \
+  --save
 ```
+
+* Step3. Run the following command to run traditional bandpass-filter demo:
+
+```sh
+python tools/demo_bandpass.py -b 2 --path datasets/clean_water_13m --device "cuda:0" --cache
+```
+
+> Arguments: \
+> **--path**: path to the dataset. \
+> **-b**: set the batch-size when inferring. \
+> **--device**: specify the GPU when inferring. \
+> **--save**: save imaging results.
+
+* Step4. Use FDEL as an equivalent bandpass filter:
+
+```sh
+python tools/demo_bandpass.py -b 2 \
+  --path datasets/clean_water_13m \
+  -f exps/streaknet/streaknet_s.py \
+  -c checkpoints/streaknet_s_ckpt.pth \
+  --device "cuda:0" --cache
+```
+
+> Arguments: \
+> **--path**: path to the dataset. \
+> **-f**: specify the experiment profile. \
+> **-b**: set the batch-size when inferring. \
+> **-c**: specify the model weights when inferring. \
+> **--device**: specify the GPU when inferring. \
+> **--save**: save imaging results.
 
 </details>
 
@@ -193,48 +279,80 @@ python tools/demo.py --path datasets/clean_water_10m/data -f exps/streaknet/stre
 
 * Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
 
-* Step2. Prepare the [**StreakData**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
+* Step2. Prepare the [**StreakNet-Dataset**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
 
-* Step3. Train models by following the ['*Reproduce Experimental Results*'](#reproduceexperimentalresults) section.
+* Step3. Train models by following the ['*Train Models*'](#trainmodels) section.
 
-* Step4. Evaluation.
+* Step4. Evaluate StreakNet:
 
 ```sh
-python tools/valid.py -d 1 -b 512 -f exps/streaknet/streaknet_s.py --cache
-                                                    streaknet_m.py
-                                                    streaknet_l.py
-                                                    streaknet_x.py
+python tools/valid_streaknet.py -b 2 \
+  -f exps/streaknet/streaknet_s.py \
+  -c checkpoints/streaknet_s_ckpt.pth \
+  -d "cuda:0" --cache
 ```
 
 > Arguments: \
-> **-b**: set the batch-size when evaluating. \
-> **-d**: set the number of GPU when evaluating (Currently, only d=1 is supported). \
 > **-f**: specify the experiment profile. \
-> **--cache**: use RAM cache when evaluating.
+> **-b**: set the batch-size when inferring. \
+> **-c**: specify the model weights when inferring. \
+> **-d**: specify the GPU when inferring. \
+> **--save**: save imaging results.
+
+* Step5. Evaluate traditional bandpass filter algorithm:
+
+```sh
+python tools/valid_bandpass.py -b 2 -d "cuda:0" --cache
+```
+
+> Arguments: \
+> **-b**: set the batch-size when inferring. \
+> **--device**: specify the GPU when inferring. \
+> **--save**: save imaging results.
+
+* Step 6. Evaluate the equivalent bandpass filter:
+
+```sh
+python tools/valid_bandpass.py -b 2 \
+  -f exps/streaknet/streaknet_s.py \
+  -c checkpoints/streaknet_s_ckpt.pth \
+  -d "cuda:0" --cache
+```
+
+> Arguments: \
+> **-f**: specify the experiment profile. \
+> **-b**: set the batch-size when inferring. \
+> **-c**: specify the model weights when inferring. \
+> **-d**: specify the GPU when inferring. \
+> **--save**: save imaging results.
 
 </details>
 
 <details>
-<summary>Traditional Signal Processing Method</summary>
+<summary>Test speed benchmark</summary>
 
 * Step1. Install the StreakNet module by following the ['*Installation*'](#quickstartinstallation) section.
 
-* Step2. Prepare the [**StreakData**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
+* Step2. Prepare the [**StreakNet-Dataset**](#dataset) dataset by following the ['*Prepare Dataset*'](#preparedataset) setction.
 
-* Step3. Run traditional signal processing method.
+* Step3. Test AIT of StreakNets.
 
 ```sh
-python scripts/traditional_gpu_process.py
+python tools/benchmark_streaknet.py -f exps/streaknet/streaknet_s.py -d "cuda:0" --save
 ```
 
-* The results will save to '*StreakNet_outputs/traditional*'.
+* Step 4. Test AIT of traditional bandpass filter algorithm.
+
+```sh
+python tools/benchmark_bandpass.py -d "cuda:0" --save
+```
 
 </details>
 
-## Deployment
+<!-- ## Deployment
 
 1. [ONNX export and an ONNXRuntime](./demo/ONNXRuntime/)
-2. [TensorRT in C++ and Python](./demo/TensorRT/)
+2. [TensorRT in C++ and Python](./demo/TensorRT/) -->
 
 ## Cite StreakNet
 If you use StreakNet in your research, please cite our work by using the following BibTeX entry:
@@ -253,9 +371,6 @@ If you use StreakNet in your research, please cite our work by using the followi
 * We were deeply saddened to hear the news of the passing of [Prof. Xiaoou Tang](https://baike.baidu.com/item/%E6%B1%A4%E6%99%93%E9%B8%A5/7200225) (1968.1-2023.12.15) on December 16, 2023, shortly after completing all the preliminary experiments for this project.  Prof. Tang devoted his entire life to computer science research and made outstanding contributions to the advancement of computer vision and artificial intelligence. We express our utmost respect to Prof. Tang.🕯️🕯️🕯️
 
 ## Copyright
-
-> Developer: Hongjun An (Ph.D. Student)\
-> Supervisor: [Prof. Xuelong Li](https://iopen.nwpu.edu.cn/info/1329/1171.htm), [Assoc. Prof. Zhe Sun](https://iopen.nwpu.edu.cn/info/1251/2076.htm)
 
 <br>
 <div align="center"><img src="./assets/iopen.jpg" width="500"></div>

@@ -228,3 +228,5 @@ Thumbs.db
 debug*.py
 cmd.txt
 run*.sh
+
+checkpoints

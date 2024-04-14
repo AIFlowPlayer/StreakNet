@@ -27,6 +27,7 @@ def make_parse():
     parser.add_argument("-expn", "--experiment-name", type=str, default=None)
     parser.add_argument("-b", "--batch-size", type=int, default=2)
     parser.add_argument("-f", "--exp_file", default=None, type=str, help="please input your experiment description file")
+    parser.add_argument("-c", "--ckpt", default=None, type=str, help="ckpt for demo")
     parser.add_argument("-l", "--lower", type=float, default=450, help="Lower bound of Band Pass Filter, MHz")
     parser.add_argument("-u", "--upper", type=float, default=550, help="Upper bound of Band Pass Filter, MHz")
     parser.add_argument("-d", "--device", type=str, default='cpu', help="Select device.")
@@ -58,10 +59,14 @@ def get_filter(args, max_len=4000):
         logger.info("Model Structure:\n{}".format(str(model)))
         
         file_name = os.path.join(exp.output_dir, args.experiment_name)
-        ckpt_file = os.path.join(file_name, "best_ckpt.pth")
-        logger.info("loading checkpoint from {}".format(ckpt_file))
+        if args.ckpt is None:
+            ckpt_file = os.path.join(file_name, "best_ckpt.pth")
+        else:
+            ckpt_file = args.ckpt
+        logger.info("loading checkpoint")
         loc = args.device
         ckpt = torch.load(ckpt_file, map_location=loc)
+        # load the model state dict
         model.load_state_dict(ckpt["model"])
         logger.info("loaded checkpoint done.")
         
