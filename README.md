@@ -4,25 +4,13 @@
 
 
 <div align="center"><img src="./assets/streaknet_logo.png" width="400"></div><br>
-<div align="center"><img src="./assets/demo.png"></div>
+<div align="center"><img src="./assets/overview.jpg"></div>
 
 ## Introduction
 
-[StreakNet](https://github.com/BestAnHongjun/StreakNet) is a Deep-Learning (DL) based neural network for underwater target detection in **Underwater Streak Camera LiDAR (USCL)** systems. It is capable of detecting underwater objects at a **millimeter-level** accuracy up to a distance of **20m**. For further details, please refer to our [paper](#).
+In this paper, we introduce StreakNet-Arch, a novel signal processing architecture designed for Underwater Carrier LiDAR-Radar (UCLR) imaging systems, to address the limitations in scatter suppression and real-time imaging. StreakNet-Arch formulates the signal processing as a real-time, end-to-end binary classification task, enabling real-time image acquisition. To achieve this, we leverage Self-Attention networks and propose a novel Double Branch Cross Attention (DBC-Attention) mechanism that surpasses the performance of traditional methods. Furthermore, we present a method for embedding streak-tube camera images into attention networks, effectively acting as a learned bandpass filter. To facilitate further research, we contribute a publicly available streak-tube camera image dataset. The dataset contains 2,695,168 real-world underwater 3D point cloud data. These advancements significantly improve UCLR capabilities, enhancing its performance and applicability in underwater imaging tasks.
 
-<div align="center"><img src="./assets/streaknet_architecture.png"></div>
-
-## Benchmark
-
-StreakNet Benchmark
-
-|Model|F1-Score (%)|PSNR (dB)|Speed V100 (ms/pixel)|Speed NX (ms/pixel)|Params(M)|Weights|
-|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-|[StreakNet-s](./exps/streaknet/streaknet_s.py)|85.46|8.75|00.0|00.00|1.25|[GoogleDrive](https://drive.google.com/file/d/1938oCFHBFmlaTmLYb7Jan1TOAy26-ge1/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1tT_aXlzfttNEWIaRVBpSng?pwd=8rai)|
-|[StreakNet-m](./exps/streaknet/streaknet_m.py)|85.87|8.91|00.0|00.00|3.15|[GoogleDrive](https://drive.google.com/file/d/17vpuiSYOK8m-qOtA4yQTwv-hofZT0o_W/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1A2144Y7f0MMEOlNDcbCRrg?pwd=wnxv)|
-|[StreakNet-l](./exps/streaknet/streaknet_l.py)|85.90|8.92|00.0|00.00|10.51|[GoogleDrive](https://drive.google.com/file/d/146c8fSDOPtsmUDedHA7jN704a8btBqtR/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1K9oOgCrI-t5MF8RuC62RSA?pwd=et43)|
-|[StreakNet-x](./exps/streaknet/streaknet_x.py)|86.23|9.00|00.0|00.00|50.40|[GoogleDrive](https://drive.google.com/file/d/1c7VP4C7pFSd-kgZXpLitLLRty-g_Mlws/view?usp=drive_link)<br>[BaiduDisk](https://pan.baidu.com/s/1nvHj4aWo4pXhP0LJB78Tkg?pwd=fl8o)|
-|(baseline)|42.56|4.91|00.0|00.00|---|---|
+For further details, please refer to our [paper](#).
 
 ## Dataset
 <details>
