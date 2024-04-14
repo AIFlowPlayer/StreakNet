@@ -93,30 +93,6 @@ class DBCAttention(nn.Module):
             out_sig, out_tem = layer(out_sig, out_tem)
         pred = torch.concat([out_sig, out_tem], dim=1)
         return pred
-
-
-class MLP(nn.Module):
-    def __init__(self, width: float=1.00, depth: float=1.00, dropout: float=0.4, act: str='silu'):
-        super(MLP, self).__init__()
-        
-        nn_layer = nn.Sequential(
-            nn.Linear(in_features=int(512 * width * 2), out_features=int(512 * width * 2)),
-            nn.Dropout(dropout),
-            get_activation(act, False)
-        )
-        
-        self.width = width
-        self.flatten = nn.Flatten(start_dim=1, end_dim=-1)
-        self.layers = _get_clones(nn_layer, N=round(8 * depth))
-        
-    def forward(self, x):
-        pred = self.flatten(x)
-        for layer in self.layers:
-            pred = layer(pred)
-        out_sig = pred[:, None, :int(self.width * 512)]
-        out_tem = pred[:, None, int(self.width * 512):]
-        pred = torch.concat([out_sig, out_tem], dim=1)
-        return pred
         
 
 def _get_clones(module, N):
