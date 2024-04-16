@@ -342,11 +342,13 @@ python tools/benchmark_bandpass.py -d "cuda:0" --save
 If you use StreakNet in your research, please cite our work by using the following BibTeX entry:
 
 ```latex
-@article{streaknet2024,
-  title={xxx},
-  author={xxx},
-  journal={xxx},
-  year={2024}
+@misc{li2024streaknetarch,
+      title={StreakNet-Arch: An Anti-scattering Network-based Architecture for Underwater Carrier LiDAR-Radar Imaging}, 
+      author={Xuelong Li and Hongjun An and Guangying Li and Xing Wang and Guanghua Cheng and Zhe Sun},
+      year={2024},
+      eprint={2404.09158},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 ```
 
