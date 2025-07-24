@@ -6,7 +6,7 @@
 
 In this paper, we introduce StreakNet-Arch, a novel signal processing architecture designed for Underwater Carrier LiDAR-Radar (UCLR) imaging systems, to address the limitations in scatter suppression and real-time imaging. StreakNet-Arch formulates the signal processing as a real-time, end-to-end binary classification task, enabling real-time image acquisition. To achieve this, we leverage Self-Attention networks and propose a novel Double Branch Cross Attention (DBC-Attention) mechanism that surpasses the performance of traditional methods. Furthermore, we present a method for embedding streak-tube camera images into attention networks, effectively acting as a learned bandpass filter. To facilitate further research, we contribute a publicly available streak-tube camera image dataset. The dataset contains 2,695,168 real-world underwater 3D point cloud data. These advancements significantly improve UCLR capabilities, enhancing its performance and applicability in underwater imaging tasks.
 
-For further details, please refer to our [paper](https://arxiv.org/abs/2404.09158).
+For further details, please refer to our [paper](https://doi.org/10.1109/TIP.2025.3586431).
 
 ## Dataset
 <details>
@@ -342,19 +342,17 @@ python tools/benchmark_bandpass.py -d "cuda:0" --save
 If you use StreakNet in your research, please cite our work by using the following BibTeX entry:
 
 ```latex
-@misc{li2024streaknetarch,
-      title={StreakNet-Arch: An Anti-scattering Network-based Architecture for Underwater Carrier LiDAR-Radar Imaging}, 
-      author={Xuelong Li and Hongjun An and Guangying Li and Xing Wang and Guanghua Cheng and Zhe Sun},
-      year={2024},
-      eprint={2404.09158},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@ARTICLE{li2025streaknet,
+  author={Li, Xuelong and An, Hongjun and Zhao, Haofei and Li, Guangying and Liu, Bo and Wang, Xing and Cheng, Guanghua and Wu, Guojun and Sun, Zhe},
+  journal={IEEE Transactions on Image Processing}, 
+  title={StreakNet-Arch: An Anti-Scattering Network-Based Architecture for Underwater Carrier LiDAR-Radar Imaging}, 
+  year={2025},
+  volume={34},
+  number={},
+  pages={4357-4370},
+  doi={10.1109/TIP.2025.3586431}
 }
 ```
-
-## Respect to Predecessors
-* During the development of this open-source project, we drew inspiration from the excellent engineering architecture of the [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX) project by [Megvii](https://www.megvii.com/) Technology.  The YOLOX project was led by [Dr. Jian Sun](https://baike.baidu.com/item/%E5%AD%99%E5%89%91/19814032) (1976.10-2022.6.14), a respected scientist, who made significant contributions to the advancement of computer vision.🕯️🕯️🕯️
-* We were deeply saddened to hear the news of the passing of [Prof. Xiaoou Tang](https://baike.baidu.com/item/%E6%B1%A4%E6%99%93%E9%B8%A5/7200225) (1968.1-2023.12.15) on December 16, 2023, shortly after completing all the preliminary experiments for this project.  Prof. Tang devoted his entire life to computer science research and made outstanding contributions to the advancement of computer vision and artificial intelligence. We express our utmost respect to Prof. Tang.🕯️🕯️🕯️
 
 ## Copyright
 
